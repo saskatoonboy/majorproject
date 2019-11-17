@@ -5,15 +5,21 @@
 // Extra for Experts:
 // - 
 
-let creature;
+let creatures = [];
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
   angleMode(DEGREES);
-  creature = new Creature();
+  creatures.push(new Creature(random(0, width), random(0, height)));
 }
 
 function draw() {
   background(220);
-  creature.display();
+  for (creature of creatures) {
+    creature.display();
+  }
+}
+
+function mousePressed() {
+  creatures.push(new Creature(mouseX, mouseY));
 }
