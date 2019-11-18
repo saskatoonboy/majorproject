@@ -1,4 +1,5 @@
-let nodes = [];
+// Functions:
+// - 
 let connections = [];
 let basicBrain = {
     nodes : [],
@@ -50,6 +51,11 @@ class Brain {
             this.nodes = genes.unpackNodes();
             this.connections = genes.unpackConnections();
         }
+        
+        for (connection of this.connections) {
+            this.nodes[connection.from].outputs.push(this);
+            this.nodes[connections.to].inputs.push(this);
+        }
     };
 
     getGenenome() {
@@ -60,8 +66,30 @@ class Brain {
             connectionGenes.push(connection.getGene());
         }
 
-        return new ConnectionGenenome(connectionGenes);
+        return new BrainGenenome(connectionGenes, nodeGenes);
 
+    }
+
+    getData(constant, hunger, maturity, health, speed, disNearCreature, angNearCreature, disNearFood, andNearFood, creatureCnt, foodCnt, red, green, blue, toggle, timer, lifeTime, com1, com2, com3) {
+        const data = {
+            front : 0,
+            back : 0,
+            left : 0,
+            right : 0,
+            brightNeed : 0,
+            eatNeed : 0,
+            mateNeed : 0,
+            resetTimer : 0,
+            com1 : 0,
+            com2 : 0,
+            com3 : 0
+        };
+
+        for (let i = 0; i < 20; i++) {
+
+        }
+
+        return data;
     }
 }
 
@@ -72,8 +100,14 @@ class Node {
         this.identificationNumber = nodes.length;
         // true = input, false = output, undefinded = hidden
         this.kind = kind;
+        this.inputs = [];
+        this.outputs = [];
 
         nodes.push(this);
+    }
+
+    getGene() {
+        return new NodeGene(this.identificationNumber, this.function);
     }
 }
 
