@@ -12,7 +12,7 @@ class Pellet {
     display() {
         translate(this.pos.x, this.pos.y);
         fill(41, 140, 72);
-        circle(0, 0, this.size);
+        circle(0, 0, this.size*10);
         translate(-this.pos.x, -this.pos.y);
     }
 
