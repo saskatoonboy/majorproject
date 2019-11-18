@@ -26,6 +26,8 @@ class Creature {
         this.distanceOfVision = this.genes.distanceOfVision;
         this.timerSpeed = this.genes.timerSpeed;
         this.communicationSensitivity = this.genes.communicationSensitivity;
+
+        this.brain = new Brain(gene.brainGenes);
     }
 
     // display the creature on screen
