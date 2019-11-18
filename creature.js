@@ -14,6 +14,7 @@ class Creature {
             this.genes = genes;
         }
 
+        // get physical traites from genes
         this.speedRatio = this.genes.speed;
         this.sizeRatio = this.genes.size;
         this.red = this.genes.red;
@@ -35,6 +36,7 @@ class Creature {
         noStroke();
         translate(this.pos.x, this.pos.y);
         rotate(this.facing);
+        fill(this.red, this.green, this.blue);
         circle(0, 0, this.sizeRatio*50);
         triangle(-this.sizeRatio*25, 0, this.sizeRatio*25, 0, 0, -sqrt(((this.sizeRatio*50)**2)-((this.sizeRatio*25)**2)));
         translate(-this.pos.x, -this.pos.y);
