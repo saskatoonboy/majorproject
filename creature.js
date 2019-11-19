@@ -45,6 +45,6 @@ class Creature {
 
     // update the creature
     update() {
-        
+        //print(this.brain.getData(this.constantValue, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0));
     }
 }

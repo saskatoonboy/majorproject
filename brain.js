@@ -43,22 +43,16 @@ class Brain {
     }
 
     getData(constant, hunger, maturity, health, speed, disNearCreature, angNearCreature, disNearFood, andNearFood, creatureCnt, foodCnt, red, green, blue, toggle, timer, lifeTime, com1, com2, com3) {
-        const data = {
-            front : 0,
-            back : 0,
-            left : 0,
-            right : 0,
-            brightNeed : 0,
-            eatNeed : 0,
-            mateNeed : 0,
-            resetTimer : 0,
-            com1 : 0,
-            com2 : 0,
-            com3 : 0
-        };
+        let data = [];
+        let input = [constant, hunger, maturity, health, speed, disNearCreature, angNearCreature, disNearFood, andNearFood, creatureCnt, foodCnt, red, green, blue, toggle, timer, lifeTime, com1, com2, com3];
 
-        for (let i = 0; i < 20; i++) {
+        for (let i = 0; i < inputNodeCnt; i++) {
+            this.nodes[i].value = input[i];
+        }
 
+        for (let i = inputNodeCnt; i < inputNodeCnt + outputNodeCnt; i++) {
+            this.nodes[i].calculate()
+            data.push(this.nodes[i].value);
         }
 
         return data;
@@ -74,10 +68,24 @@ class Node {
         this.kind = kind;
         this.inputs = [];
         this.outputs = [];
+        this.value;
     }
 
     getGene() {
         return new NodeGene(this.identificationNumber, this.function);
+    }
+
+    calculate() {
+        
+    }
+
+    verifyInputs() {
+        for (let input of this.inputs) {
+            if (input.value === undefined) {
+                input.verifyInput();
+                input.calculate();
+            }
+        }
     }
 }
 
@@ -89,6 +97,7 @@ class Connection {
         this.from = from;
         this.to = to;
         this.enabled = true;
+        this.value;
         
         if (weight === undefined) {
             this.weight = floor(random(-1, 1.01)*100)/100;
@@ -101,5 +110,16 @@ class Connection {
 
     getGene() {
         return new ConnectionGene(this.identificationNumber, this.from, this.to, this.enabled, this.weight);
+    }
+
+    calculate() {
+        this.value = input.value;
+    }
+
+    verifyInput() {
+        if (this.input.value === undefined) {
+            this.input.verifyInputs();
+            this.input.calculate();
+        }
     }
 }
