@@ -16,8 +16,6 @@ function setup() {
   for (let i = 0; i < startingFoodCount; i++) {
     foods.push(new Pellet(random(0, width), random(0, height)));
   }
-
-  setupBasicBrain();
 }
 
 function draw() {

@@ -1,52 +1,24 @@
 // Functions:
 // - 
 let connections = [];
-let basicBrain = {
-    nodes : [],
-    connections : [],
-};
-
-function setupBasicBrain() {
-    basicBrain.nodes = [new Node(true), 
-                        new Node(true), 
-                        new Node(true), 
-                        new Node(true), 
-                        new Node(true), 
-                        new Node(true), 
-                        new Node(true), 
-                        new Node(true), 
-                        new Node(true), 
-                        new Node(true), 
-                        new Node(true), 
-                        new Node(true), 
-                        new Node(true), 
-                        new Node(true), 
-                        new Node(true), 
-                        new Node(true), 
-                        new Node(true), 
-                        new Node(true), 
-                        new Node(true), 
-                        new Node(true), 
-                        new Node(false), 
-                        new Node(false), 
-                        new Node(false), 
-                        new Node(false), 
-                        new Node(false), 
-                        new Node(false), 
-                        new Node(false), 
-                        new Node(false), 
-                        new Node(false), 
-                        new Node(false), 
-                        new Node(false)]
-};
+const inputNodeCnt = 20;
+const outputNodeCnt = 11;
 
 class Brain {
 
     //constructor
     constructor(genes) {
         if (genes === undefined) {
-            this.nodes = basicBrain.nodes;
-            this.connections = basicBrain.connections;
+            this.nodes = [];
+            this.connections = [];
+
+            for (let i = 0; i < inputNodeCnt; i++) {
+                this.nodes.push(new Node(this.nodes.length, true));
+            }
+
+            for (let i = 0; i < outputNodeCnt; i++) {
+                this.nodes.push(new Node(this.nodes.length, false));
+            }
         } else {
             this.nodes = genes.unpackNodes();
             this.connections = genes.unpackConnections();
@@ -96,14 +68,12 @@ class Brain {
 class Node {
 
     //constructor
-    constructor(kind) {
-        this.identificationNumber = nodes.length;
+    constructor(identNum, kind) {
+        this.identificationNumber = identNum;
         // true = input, false = output, undefinded = hidden
         this.kind = kind;
         this.inputs = [];
         this.outputs = [];
-
-        nodes.push(this);
     }
 
     getGene() {
