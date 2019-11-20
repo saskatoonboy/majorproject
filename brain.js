@@ -3,6 +3,9 @@
 let connections = [];
 const inputNodeCnt = 20;
 const outputNodeCnt = 11;
+const clampMax = 1;
+const clampMin = 0;
+const activeFncs = [sign, clamp, round];
 
 class Brain {
 
@@ -17,8 +20,10 @@ class Brain {
             }
 
             for (let i = 0; i < outputNodeCnt; i++) {
-                this.nodes.push(new Node(this.nodes.length, false));
+                this.nodes.push(new Node(this.nodes.length, false, 2));
             }
+
+            this.nodes.push(new Connection(this.nodes[0], this.nodes[20], 1));
         } else {
             this.nodes = genes.unpackNodes();
             this.connections = genes.unpackConnections();
@@ -51,6 +56,7 @@ class Brain {
         }
 
         for (let i = inputNodeCnt; i < inputNodeCnt + outputNodeCnt; i++) {
+            this.nodes[i].verifyInputs();
             this.nodes[i].calculate()
             data.push(this.nodes[i].value);
         }
@@ -62,13 +68,18 @@ class Brain {
 class Node {
 
     //constructor
-    constructor(identNum, kind) {
+    constructor(identNum, kind, fnc) {
         this.identificationNumber = identNum;
         // true = input, false = output, undefinded = hidden
         this.kind = kind;
         this.inputs = [];
         this.outputs = [];
         this.value;
+        this.function = fnc;
+
+        if (this.function === undefined) {
+            this.function = floor(random(0, activeFncs.length));
+        }
     }
 
     getGene() {
@@ -76,9 +87,13 @@ class Node {
     }
 
     calculate() {
-        
-    }
+        let sum = 0;
 
+        for (let input of this.inputs) {
+            sum += input.value * input.weight;
+        }
+        this.value = activeFncs[this.function](sum);
+    }
     verifyInputs() {
         for (let input of this.inputs) {
             if (input.value === undefined) {
@@ -95,7 +110,9 @@ class Connection {
     constructor(from, to, weight) {
         this.identificationNumber = connections.length;
         this.from = from;
+        this.from.outputs.push(this);
         this.to = to;
+        this.to.inputs.push(this);
         this.enabled = true;
         this.value;
         
@@ -113,13 +130,35 @@ class Connection {
     }
 
     calculate() {
-        this.value = input.value;
+        this.value = this.from.value;
     }
 
     verifyInput() {
-        if (this.input.value === undefined) {
-            this.input.verifyInputs();
-            this.input.calculate();
+        if (this.from.value === undefined) {
+            this.from.verifyInputs();
+            this.from.calculate();
         }
     }
+}
+
+function sign(num) {
+    if (num >= 0) {
+        return 1;
+    } else {
+        return -1;
+    }
+}
+
+function clamp(num) {
+    if (num > clampMax) {
+        return clampMax;
+    } else if (num < clampMin) {
+        return clampMin;
+    }
+
+    return num;
+}
+
+function round(num) {
+    return floor(num+0.5);
 }

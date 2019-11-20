@@ -1,3 +1,5 @@
+let instructionFunctions = [forward];
+
 // creature that is evolving over time
 class Creature {
     // construct the creature class
@@ -6,7 +8,7 @@ class Creature {
         this.stomach = 0;
         this.health = 100;
         this.pos = createVector(x, y);
-        this.facing = 0;
+        this.facing = createVector(random(0, width), random(0, height)).normalize();
 
         if (genes === undefined) {
             this.genes = gene.randomGenes();
@@ -36,7 +38,7 @@ class Creature {
     display() {
         noStroke();
         translate(this.pos.x, this.pos.y);
-        rotate(this.facing);
+        //rotate(this.facing.heading());
         fill(this.red, this.green, this.blue);
         circle(0, 0, this.sizeRatio*50);
         triangle(-this.sizeRatio*25, 0, this.sizeRatio*25, 0, 0, -sqrt(((this.sizeRatio*50)**2)-((this.sizeRatio*25)**2)));
@@ -45,6 +47,17 @@ class Creature {
 
     // update the creature
     update() {
-        //print(this.brain.getData(this.constantValue, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0));
+        let data = this.brain.getData(this.constantValue, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+
+        for (let i = 0; i < instructionFunctions.length; i++) {
+            let num = data[i];
+            instructionFunctions[i](num, this);
+        }
+    }
+}
+
+function forward(inst, creature) {
+    if (inst === 1) {
+        creature.pos.add(creature.facing.copy().mult(creature.speedRatio));
     }
 }
