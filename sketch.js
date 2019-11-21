@@ -11,7 +11,10 @@ let startingFoodCount = 100;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
+
+  // randomly place food on the screen
   for (let i = 0; i < startingFoodCount; i++) {
+    // put a food pellet into the food array
     foods.push(new Pellet(random(0, width), random(0, height)));
   }
 }
@@ -41,5 +44,6 @@ function draw() {
 }
 
 function mousePressed() {
+  // add a new creature at the mouse locations
   creatures.push(new Creature(mouseX, mouseY));
 }
