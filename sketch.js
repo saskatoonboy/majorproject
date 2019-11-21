@@ -11,7 +11,6 @@ let startingFoodCount = 100;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  angleMode(DEGREES);
   for (let i = 0; i < startingFoodCount; i++) {
     foods.push(new Pellet(random(0, width), random(0, height)));
   }

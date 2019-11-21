@@ -8,7 +8,7 @@ class Creature {
         this.stomach = 0;
         this.health = 100;
         this.pos = createVector(x, y);
-        this.facing = createVector(random(0, width), random(0, height)).normalize();
+        this.facing = createVector(floor(random(0, width)), floor(random(0, height))).sub(this.pos).normalize();
 
         if (genes === undefined) {
             this.genes = gene.randomGenes();
@@ -37,12 +37,14 @@ class Creature {
     // display the creature on screen
     display() {
         noStroke();
+        let angle = this.facing.heading()+1.5;
+        push();
         translate(this.pos.x, this.pos.y);
-        //rotate(this.facing.heading());
+        rotate(angle);
         fill(this.red, this.green, this.blue);
         circle(0, 0, this.sizeRatio*50);
         triangle(-this.sizeRatio*25, 0, this.sizeRatio*25, 0, 0, -sqrt(((this.sizeRatio*50)**2)-((this.sizeRatio*25)**2)));
-        translate(-this.pos.x, -this.pos.y);
+        pop();
     }
 
     // update the creature
