@@ -12,7 +12,6 @@ let startingFoodCount = 100;
 function setup() {
   createCanvas(windowWidth, windowHeight);
   angleMode(DEGREES);
-  creatures.push(new Creature(random(0, width), random(0, height)));
   for (let i = 0; i < startingFoodCount; i++) {
     foods.push(new Pellet(random(0, width), random(0, height)));
   }
@@ -43,5 +42,5 @@ function draw() {
 }
 
 function mousePressed() {
-  creatures.push(new Creature(floor(mouseX, mouseY)));
+  creatures.push(new Creature(mouseX, mouseY));
 }
