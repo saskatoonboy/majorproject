@@ -5,7 +5,7 @@ const inputNodeCnt = 20;
 const outputNodeCnt = 11;
 const clampMax = 1;
 const clampMin = 0;
-const activeFncs = [sign, clamp, round, sigmoid];
+const activeFncs = [sign, clamp, round, sigmoid, nothing, square, cube, absolute, root, binary];
 
 class Brain {
 
@@ -22,16 +22,10 @@ class Brain {
             for (let i = 0; i < outputNodeCnt; i++) {
                 this.nodes.push(new Node(this.nodes.length, false));
             }
-
-            this.nodes.push(new Connection(this.nodes[0], this.nodes[20], 1));
+            
         } else {
             this.nodes = genes.unpackNodes();
             this.connections = genes.unpackConnections();
-        }
-        
-        for (let connection of this.connections) {
-            this.nodes[connection.from.identificationNumber].outputs.push(this);
-            this.nodes[connection.to.identificationNumber].inputs.push(this);
         }
     };
 
@@ -47,10 +41,10 @@ class Brain {
 
     }
 
-    getData(constant, hunger, maturity, health, speed, disNearCreature, angNearCreature, disNearFood, andNearFood, creatureCnt, foodCnt, red, green, blue, toggle, timer, lifeTime, com1, com2, com3) {
+    getData(constant, hunger, maturity, health, speed, disNearCreature, angNearCreature, disNearFood, angNearFood, creatureCnt, foodCnt, red, green, blue, toggle, timer, lifeTime, com1, com2, com3) {
         let data = [];
-        let input = [constant, hunger, maturity, health, speed, disNearCreature, angNearCreature, disNearFood, andNearFood, creatureCnt, foodCnt, red, green, blue, toggle, timer, lifeTime, com1, com2, com3];
-
+        let input = [constant, hunger, maturity, health, speed, disNearCreature, angNearCreature, disNearFood, angNearFood, creatureCnt, foodCnt, red, green, blue, toggle, timer, lifeTime, com1, com2, com3];
+        
         for (let i = 0; i < inputNodeCnt; i++) {
             this.nodes[i].value = input[i];
         }
@@ -62,6 +56,12 @@ class Brain {
         }
 
         this.reset();
+
+        for (let i = 0; i < data.length; i++) {
+            if (Number.isNaN(data[i])) {
+                data[i] = 0;
+            }
+        }
 
         return data;
     }
@@ -186,4 +186,32 @@ function round(num) {
 
 function sigmoid(num) {
     return 1/(1+exp(-num));
+}
+
+function nothing(num) {
+    return num;
+}
+
+function square(num) {
+    return num * num;
+}
+
+function cube(num) {
+    return square(num) * num;
+}
+
+function absolute(num) {
+    return abs(num);
+}
+
+function root(num) {
+    return sqrt(num);
+}
+
+function binary(num) {
+    if (num > 0) {
+        return 1;
+    }
+
+    return 0;
 }

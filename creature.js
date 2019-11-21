@@ -1,4 +1,4 @@
-let instructionFunctions = [forward];
+let instructionFunctions = [forward, back, left, right, wantToGiveBirth, wantToEat, wantToMate, resetTimer, com1, com2, com3];
 
 // creature that is evolving over time
 class Creature {
@@ -10,6 +10,16 @@ class Creature {
         this.health = 100;
         this.pos = createVector(x, y);
         this.facing = createVector(floor(random(0, width)), floor(random(0, height))).sub(this.pos).normalize();
+        this.timer = 0;
+        this.maturity;
+        this.wantToEat = 0;
+        this.wantToBirth = 0;
+        this.wantToMate = 0; // WIP
+        this.hunger = 0; // 0 is not hunger 1 is crazy hungry
+        this.transmiting = [0, 0, 0];
+        this.reciving = [0, 0, 0];
+        this.timeAlive = 0; // millis
+        this.lastMilis = millis();
 
         // if there were not any genes given generate them randomly
         if (genes === undefined) {
@@ -32,6 +42,13 @@ class Creature {
         this.timerSpeed = this.genes.timerSpeed;
         this.communicationSensitivity = this.genes.communicationSensitivity;
         this.constantValue = this.genes.constant;
+        this.toggleAble = 0;
+        this.foodVisible = 0;
+        this.creaturesVisible = 0;
+        this.nearestFoodAngle = 0;
+        this.nearestFoodDistance = 0;
+        this.nearestCreatureAngle = 0;
+        this.nearestCreatureDistance = 0;
 
         // create bratin
         this.brain = new Brain(gene.brainGenes);
@@ -58,8 +75,8 @@ class Creature {
     // update the creature
     update() {
         // get the instructions from the brain
-        let data = this.brain.getData(this.constantValue, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-
+        let data = this.brain.getData(this.constantValue, this.hunger, this.maturity, this.health, this.speedRatio, this.nearestCreatureDistance, this.nearestCreatureAngle, this.nearestFoodDistance, this.nearestFoodAngle, this.creaturesVisible, this.foodVisible, this.red, this.green, this.blue, this.toggleAble, this.timer, this.timeAlive, this.reciving[0], this.reciving[1], this.reciving[2]);
+       
         // loop through every function that we call using brain output and call it
         for (let i = 0; i < instructionFunctions.length; i++) {
             let num = data[i];
@@ -79,6 +96,13 @@ class Creature {
         } else if (this.pos.y > height) {
             this.pos.y -= height;
         }
+
+        // updating time
+        let time = millis() - this.lastMilis;
+        this.lastMilis = millis();
+
+        this.timer += this.timerSpeed * time;
+        this.timeAlive += time;
     }
 }
 
@@ -87,4 +111,48 @@ function forward(inst, creature) {
     if (inst >= 0.5) {
         creature.pos.add(creature.facing.copy().mult(creature.speedRatio));
     }
+}
+
+function back(inst, creature) {
+    if (inst >= 0.5) {
+        creature.pos.sub(creature.facing.copy().mult(creature.speedRatio));
+    }
+} 
+
+function left(inst, creature) {
+    creature.facing.rotate(-inst);
+}
+
+function right(inst, creature) {
+    creature.facing.rotate(inst);
+}
+
+function wantToGiveBirth(inst, creature) {
+    creature.wantToBirth = inst;
+}
+
+function wantToEat(inst, creature) {
+    creature.wantToEat = inst;
+}
+
+function wantToMate(inst, creature) {
+    creature.wantToMate = inst;
+}
+
+function resetTimer(inst, creature) {
+    if (inst > 0.5) {
+        creature.timer = 0;
+    }
+}
+
+function com1(inst, creature) {
+    creature.transmiting[0] = inst;
+}
+
+function com2(inst, creature) {
+    creature.transmiting[1] = inst;
+}
+
+function com3(inst, creature) {
+    creature.transmiting[2] = inst;
 }
