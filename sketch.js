@@ -43,5 +43,5 @@ function draw() {
 }
 
 function mousePressed() {
-  creatures.push(new Creature(mouseX, mouseY));
+  creatures.push(new Creature(floor(mouseX, mouseY)));
 }
