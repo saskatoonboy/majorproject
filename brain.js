@@ -54,7 +54,7 @@ class Brain {
 
         let connectionGenes = [];
 
-        for (connection of this.connections) {
+        for (let connection of this.connections) {
             connectionGenes.push(connection.getGene());
         }
 
@@ -63,43 +63,70 @@ class Brain {
     }
 
     getData(constant, hunger, maturity, health, speed, disNearCreature, angNearCreature, disNearFood, andNearFood, creatureCnt, foodCnt, red, green, blue, toggle, timer, lifeTime, com1, com2, com3) {
-        const data = {
-            front : 0,
-            back : 0,
-            left : 0,
-            right : 0,
-            brightNeed : 0,
-            eatNeed : 0,
-            mateNeed : 0,
-            resetTimer : 0,
-            com1 : 0,
-            com2 : 0,
-            com3 : 0
-        };
+        this.reset();
+        
+        const data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+
+        inputData = [constant, hunger, maturity, health, speed, disNearCreature, angNearCreature, disNearFood, andNearFood, creatureCnt, foodCnt, red, green, blue, toggle, timer, lifeTime, com1, com2, com3];
 
         for (let i = 0; i < 20; i++) {
+            this.nodes[i].value = inputData[i];
+        }
 
+        for (let i = 20; i < 31; i++) {
+            data[i-20] = this.nodes[i].calculate();
         }
 
         return data;
+    }
+
+    reset() {
+        for (let node of this.nodes) {
+            node.reset();
+        }
+
+        for (let connection of this.connections) {
+            connection.reset();
+        }
     }
 }
 
 class Node {
 
     //constructor
-    constructor(kind) {
-        this.identificationNumber = nodes.length;
+    constructor(kind, ident) {
+        this.identificationNumber = ident;
         // true = input, false = output, undefinded = hidden
         this.kind = kind;
         this.inputs = [];
         this.outputs = [];
-
-        nodes.push(this);
+        this.value;
     }
 
     getGene() {
         return new NodeGene(this.identificationNumber, this.function);
+    }
+
+    reset() {
+        this.value = undefined;
+    }
+
+    calculate() {
+        if (this.kind) {
+            getDataValue();
+        } else {
+            for (let input of this.inputs) {
+                input.verifyInput();
+            }
+        }
+    }
+
+    verifyInputs() {
+        for (let input of this.inputs) {
+            if (input.value === undefined) {
+                input.calculate();
+            }
+        }
     }
 }
 
@@ -111,6 +138,7 @@ class Connection {
         this.from = from;
         this.to = to;
         this.enabled = true;
+        this.value;
         
         if (weight === undefined) {
             this.weight = floor(random(-1, 1.01)*100)/100;
@@ -121,7 +149,21 @@ class Connection {
         connections.push(this);
     }
 
+    reset() {
+        this.value = undefined;
+    }
+
     getGene() {
         return new ConnectionGene(this.identificationNumber, this.from, this.to, this.enabled, this.weight);
+    }
+
+    calculate() {
+        
+    }
+
+    verifyInput() {
+        if (this.from.value === undefined) {
+            this.from.calculate();
+        }
     }
 }
