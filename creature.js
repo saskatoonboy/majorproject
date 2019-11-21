@@ -70,7 +70,7 @@ class Creature {
 }
 
 function forward(inst, creature) {
-    if (inst === 1) {
+    if (inst >= 0.5) {
         creature.pos.add(creature.facing.copy().mult(creature.speedRatio));
     }
 }

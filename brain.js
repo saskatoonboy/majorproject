@@ -5,7 +5,7 @@ const inputNodeCnt = 20;
 const outputNodeCnt = 11;
 const clampMax = 1;
 const clampMin = 0;
-const activeFncs = [sign, clamp, round];
+const activeFncs = [sign, clamp, round, sigmoid];
 
 class Brain {
 
@@ -20,7 +20,7 @@ class Brain {
             }
 
             for (let i = 0; i < outputNodeCnt; i++) {
-                this.nodes.push(new Node(this.nodes.length, false, 2));
+                this.nodes.push(new Node(this.nodes.length, false));
             }
 
             this.nodes.push(new Connection(this.nodes[0], this.nodes[20], 1));
@@ -182,4 +182,8 @@ function clamp(num) {
 
 function round(num) {
     return floor(num+0.5);
+}
+
+function sigmoid(num) {
+    return 1/(1+exp(-num));
 }
