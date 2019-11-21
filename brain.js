@@ -1,60 +1,52 @@
 // Functions:
 // - 
 let connections = [];
-let basicBrain = {
-    nodes : [],
-    connections : [],
-};
-
-function setupBasicBrain() {
-    basicBrain.nodes = [new Node(true), 
-                        new Node(true), 
-                        new Node(true), 
-                        new Node(true), 
-                        new Node(true), 
-                        new Node(true), 
-                        new Node(true), 
-                        new Node(true), 
-                        new Node(true), 
-                        new Node(true), 
-                        new Node(true), 
-                        new Node(true), 
-                        new Node(true), 
-                        new Node(true), 
-                        new Node(true), 
-                        new Node(true), 
-                        new Node(true), 
-                        new Node(true), 
-                        new Node(true), 
-                        new Node(true), 
-                        new Node(false), 
-                        new Node(false), 
-                        new Node(false), 
-                        new Node(false), 
-                        new Node(false), 
-                        new Node(false), 
-                        new Node(false), 
-                        new Node(false), 
-                        new Node(false), 
-                        new Node(false), 
-                        new Node(false)]
-};
 
 class Brain {
 
     //constructor
     constructor(genes) {
         if (genes === undefined) {
-            this.nodes = basicBrain.nodes;
-            this.connections = basicBrain.connections;
+            this.nodes = [new Node(true, 0), 
+                new Node(true, 1), 
+                new Node(true, 2), 
+                new Node(true, 3), 
+                new Node(true, 4), 
+                new Node(true, 5), 
+                new Node(true, 6), 
+                new Node(true, 7), 
+                new Node(true, 8), 
+                new Node(true, 9), 
+                new Node(true, 10), 
+                new Node(true, 11), 
+                new Node(true, 12), 
+                new Node(true, 13), 
+                new Node(true, 14), 
+                new Node(true, 15), 
+                new Node(true, 16), 
+                new Node(true, 17), 
+                new Node(true, 18), 
+                new Node(true, 19), 
+                new Node(false, 20), 
+                new Node(false, 21), 
+                new Node(false, 22), 
+                new Node(false, 23), 
+                new Node(false, 24), 
+                new Node(false, 25), 
+                new Node(false, 26), 
+                new Node(false, 27), 
+                new Node(false, 28), 
+                new Node(false, 29), 
+                new Node(false, 30)];
+            this.connections = [new Connection(this.nodes[0], this.nodes[20], 1)];
         } else {
             this.nodes = genes.unpackNodes();
             this.connections = genes.unpackConnections();
         }
         
-        for (connection of this.connections) {
-            this.nodes[connection.from].outputs.push(this);
-            this.nodes[connections.to].inputs.push(this);
+        for (let connection of this.connections) {
+            this.nodes[connection.from.identificationNumber].outputs.push(this);
+            this.nodes[connection.to.identificationNumber].inputs.push(this);
         }
     };
 
