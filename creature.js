@@ -55,6 +55,17 @@ class Creature {
             let num = data[i];
             instructionFunctions[i](num, this);
         }
+        if (this.pos.x < 0) {
+            this.pos.x += width;
+        } else if (this.pos.x > width) {
+            this.pos.x -= width;
+        }
+
+        if (this.pos.y < 0) {
+            this.pos.y += height;
+        } else if (this.pos.y > height) {
+            this.pos.y -= height;
+        }
     }
 }
 
