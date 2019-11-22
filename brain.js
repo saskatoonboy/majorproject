@@ -79,8 +79,126 @@ class Brain {
     mutate(chance) {
         let comparison = floor(random(101))/100;
         if (chance >= comparison) {
-            print("mutated", chance, comparison);
+            let mutationKind = random(100);
+            if (mutationKind < 25) {
+                this.addConnection();
+            } else if (mutationKind < 50) {
+                 if (!this.addNode()) {
+                    this.addConnection();
+                 }
+            } else if (mutationKind < 75) {
+                this.changeNodeFunction();
+            } else {
+                if (!this.changeConnectionWeight()) {
+                    this.changeNodeFunction();
+                }
+            }
         }
+        print(this);
+    }
+
+    addConnection() {
+
+        let firstNode = this.nodes[inputNodeCnt];
+
+        while (firstNode.kind !== false) {
+            print("loop 1");
+            firstNode = this.nodes[floor(random(0, this.nodes.length))];
+        }
+
+        let secondNode = firstNode;
+
+        while (secondNode === firstNode && !secondNode.kind) {
+            print("loop 2");
+            secondNode = this.nodes[floor(random(0, this.nodes.length))];
+        }
+
+        this.connections.push(new Connection(firstNode, secondNode));
+
+        return true;
+    }
+
+    addNode() {
+        
+        // check for an enabled connection
+        let foundViableConnection = false;
+        let index = 0;
+
+        while (!foundViableConnection) {
+            print("loop 3", index);
+            if (index >= this.connections.length) {
+                return false;
+            }
+            foundViableConnection = this.connections[index].enabled;
+            index++;
+        }
+
+        let connection = this.connections[floor(0, this.connections.length)];
+
+        let connectionsCopy = this.connections.slice();
+
+        while (!connection.enabled) {
+            print("loop 4");
+            connectionsCopy.splice(connectionsCopy.indexOf(connection), 1);
+            connection = connectionsCopy[floor(0, connectionsCopy.length)];
+        }
+
+        connection.enabled = false;
+        let newNode = new Node(this.nodes.length);
+
+        this.nodes.push(newNode);
+        this.connections.push(new Connection(connection.from, newNode, 1));
+        this.connections.push(new Connection(newNode, connection.to, connection.weight));
+
+        return true;
+    }
+
+    changeNodeFunction() {
+
+        let node = this.nodes[0];
+
+        while (!node.kind) {
+            print("loop 5");
+            node = this.nodes[floor(random(0, this.nodes.length))];
+        }
+
+        node.function = floor(random(0, activeFncs.length));
+
+        return true;
+    }
+
+    changeConnectionWeight() {
+        
+        // check for an enabled connection
+        let foundViableConnection = false;
+        let index = 0;
+
+        while (!foundViableConnection) {
+            print("loop 6", index);
+            if (index >= this.connections.length) {
+                return false;
+            }
+            foundViableConnection = this.connections[index].enabled;
+            index++;
+        }
+
+        let connection = this.connections[floor(0, this.connections.length)];
+
+        let connectionsCopy = this.connections.slice();
+
+        while (!connection.enabled) {
+            print("loop 7");
+            print(connectionsCopy.length);
+            connectionsCopy.splice(connectionsCopy.indexOf(connection), 1);
+            print(connectionsCopy.length);
+            let index = floor(0, connectionsCopy.length);
+            print(index, connection, connectionsCopy);
+            connection = connectionsCopy[index];
+        }
+
+        connection.weight = floor(random(-1, 1.01)*100)/100;
+
+        return true;
     }
 }
 
@@ -113,14 +231,16 @@ class Node {
         let sum = 0;
 
         for (let input of this.inputs) {
-            sum += input.value * input.weight;
+            if (input.enabled) {
+                sum += input.value * input.weight;
+            }
         }
         this.value = activeFncs[this.function](sum);
     }
     
     verifyInputs() {
         for (let input of this.inputs) {
-            if (input.value === undefined) {
+            if (input.value === undefined && input.enabled) {
                 input.verifyInput();
                 input.calculate();
             }
