@@ -47,3 +47,9 @@ function mousePressed() {
   // add a new creature at the mouse locations
   creatures.push(new Creature(mouseX, mouseY));
 }
+
+function keyPressed() {
+  for (creature of creatures) {
+    creature.brain.mutate(creature.mutationChance);
+  }
+}

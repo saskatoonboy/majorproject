@@ -75,6 +75,13 @@ class Brain {
             connection.reset();
         }
     }
+
+    mutate(chance) {
+        let comparison = floor(random(101))/100;
+        if (chance >= comparison) {
+            print("mutated", chance, comparison);
+        }
+    }
 }
 
 class Node {
