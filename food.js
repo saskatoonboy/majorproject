@@ -13,6 +13,7 @@ class Pellet {
 
     display() {
         translate(this.pos.x, this.pos.y);
+        noStroke();
         fill(41, 140, 72);
         circle(0, 0, this.size*10);
         translate(-this.pos.x, -this.pos.y);
