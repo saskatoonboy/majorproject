@@ -89,11 +89,13 @@ class Creature {
         if (creatureDistance <= this.distanceOfVision) {
             this.nearestCreature = nearestCreature;
             this.nearestCreatureDistance = creatureDistance;
+            this.nearestCreatureAngle = nearestCreature.pos.heading()
         }
 
         if (foodDistance <= this.distanceOfVision) {
             this.nearestFood = nearestFood;
             this.nearestFoodDistance = foodDistance;
+            this.nearestFoodAngle = nearestFood.pos.heading()
         }
 
 
