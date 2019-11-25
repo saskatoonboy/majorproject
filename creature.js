@@ -5,9 +5,10 @@ class Creature {
     // construct the creature class
     constructor(x, y, genes) {
         // base stats of creature
-        this.energy = 100;
-        this.stomach = 0;
-        this.health = 100;
+        this.energy = 0;
+        this.stomach = 0; // WIP
+        this.stomachSize = 500; // WIP
+        this.health = 1000;
         this.pos = createVector(x, y);
         this.facing = createVector(floor(random(0, width)), floor(random(0, height))).sub(this.pos).normalize();
         this.timer = 0;
@@ -20,6 +21,8 @@ class Creature {
         this.reciving = [0, 0, 0];
         this.timeAlive = 0; // millis
         this.lastMilis = millis();
+        this.meatbolism = 3; // WIP
+        this.energyRatio = 1; // WIP
 
         // if there were not any genes given generate them randomly
         if (genes === undefined) {
@@ -50,8 +53,10 @@ class Creature {
         this.nearestCreatureAngle = 0;
         this.nearestCreatureDistance = 0;
 
+        this.stomachSize = this.sizeRatio * 1000;
+
         // create bratin
-        this.brain = new Brain(gene.brainGenes);
+        this.brain = new Brain(this.genes.brainGenes);
     }
 
     // display the creature on screen
@@ -74,6 +79,24 @@ class Creature {
 
     // update the creature
     update() {
+
+        let nearestCreature = this.findNearestCreature();
+        let creatureDistance = this.distance(nearestCreature);
+
+        let nearestFood = this.findNearestFood();
+        let foodDistance = this.distance(nearestFood);
+
+        if (creatureDistance <= this.distanceOfVision) {
+            this.nearestCreature = nearestCreature;
+            this.nearestCreatureDistance = creatureDistance;
+        }
+
+        if (foodDistance <= this.distanceOfVision) {
+            this.nearestFood = nearestFood;
+            this.nearestFoodDistance = foodDistance;
+        }
+
+
         // get the instructions from the brain
         let data = this.brain.getData(this.constantValue, this.hunger, this.maturity, this.health, this.speedRatio, this.nearestCreatureDistance, this.nearestCreatureAngle, this.nearestFoodDistance, this.nearestFoodAngle, this.creaturesVisible, this.foodVisible, this.red, this.green, this.blue, this.toggleAble, this.timer, this.timeAlive, this.reciving[0], this.reciving[1], this.reciving[2]);
        
@@ -103,6 +126,169 @@ class Creature {
 
         this.timer += this.timerSpeed * time;
         this.timeAlive += time;
+
+        // update hunger
+        this.hunger = 1-(this.stomach/this.stomachSize);
+
+        if (this.energy <= 0) {
+            this.health -= 1;
+        }
+
+        if (this.health <= 0) {
+            this.kill();
+        }
+
+        this.digest();
+
+        if (this.energy > 750) {
+            this.birth();
+        }
+
+        if (this.stomach > 0) {
+            this.health ++;
+            if (this.health > 1000) {
+                this.health = 1000;
+            }
+        }
+    
+        this.eat();
+
+        // if (this.wantToEat >= 0.5) {
+            
+        // }
+
+        // if (this.timeAlive > 25000) {
+        //     print(this.timeAlive, this);
+        // }
+    }
+
+    kill() {
+        creatures.splice(creatures.indexOf(this), 1);
+    }
+
+    digest() {
+        if (this.stomach > 0) {
+            if (this.stomach > this.meatbolism) {
+                this.stomach -= this.meatbolism;
+                this.energy += this.meatbolism;
+            } else {
+                this.energy += this.stomach;
+                this.stomach = 0;
+            }
+        }
+    }
+
+    mutate() {
+        this.brain.mutate(this.mutationChance);
+
+        let comparison = floor(random(101))/100;
+        if (this.mutationChance >= comparison) {
+            let mutationKind = floor(random(0, 27));
+
+            if (mutationKind === 0) {
+                this.speedRatio += 0.1;
+            } else if (mutationKind === 1) {
+                this.sizeRatio += 0.1;
+            } else if (mutationKind === 2) {
+                this.red += 25;
+            } else if (mutationKind === 4) {
+                this.green += 25;
+            } else if (mutationKind === 5) {
+                this.blue += 25;
+            } else if (mutationKind === 6) {
+                this.mutationChance += 0.1;
+            } else if (mutationKind === 7) {
+                this.timeToHatch += 0.1;
+            } else if (mutationKind === 8) {
+                this.angleOfVision += 0.1;
+            } else if (mutationKind === 9) {
+                this.distaangleOfVisionceOfVision += 0.1;
+            } else if (mutationKind === 10) {
+                this.distanceOfVision += 0.1;
+            } else if (mutationKind === 11) {
+                this.timerSpeed += 0.1;
+            } else if (mutationKind === 12) {
+                this.communicationSensitivity += 0.1;
+            } else if (mutationKind === 13) {
+                this.constantValue += 0.1;
+            } else if (mutationKind === 0) {
+                this.speedRatio -= 0.1;
+            } else if (mutationKind === 1) {
+                this.sizeRatio -= 0.1;
+            } else if (mutationKind === 2) {
+                this.red -= 25;
+            } else if (mutationKind === 4) {
+                this.green -= 25;
+            } else if (mutationKind === 5) {
+                this.blue -= 25;
+            } else if (mutationKind === 6) {
+                this.mutationChance -= 0.1;
+            } else if (mutationKind === 7) {
+                this.timeToHatch -= 0.1;
+            } else if (mutationKind === 8) {
+                this.angleOfVision -= 0.1;
+            } else if (mutationKind === 9) {
+                this.distaangleOfVisionceOfVision -= 0.1;
+            } else if (mutationKind === 10) {
+                this.distanceOfVision -= 0.1;
+            } else if (mutationKind === 11) {
+                this.timerSpeed -= 0.1;
+            } else if (mutationKind === 12) {
+                this.communicationSensitivity -= 0.1;
+            } else if (mutationKind === 13) {
+                this.constantValue -= 0.1;
+            }
+
+        }
+    }
+
+    birth() {
+
+        this.genes.brainGenes = this.brain.getGenenome();
+        let creature = new Creature(this.pos.x, this.pos.y, this.genes);
+        creature.mutate();
+        creatures.push(creature);
+        this.energy -= 500;
+    }
+
+    eat() {
+        for (food of foods) {
+            if (food.collison(this)) {
+                this.stomach += food.consume(this.stomachSize-this.stomach);
+            }
+        }
+    }
+
+    distance(obj) {
+        return this.pos.copy().sub(obj.pos).mag();
+    }
+
+    findNearestFood() {
+
+        let nearFood = foods[0];
+
+        for (let food of foods) {
+            if (this.distance(nearFood) > this.distance(food)) {
+                nearFood = food;
+            } 
+        }
+
+        return nearFood
+    }
+
+    findNearestCreature() {
+
+        let nearCreature = creatures[0];
+
+        for (let creature of creatures) {
+            if (creature !== this) {
+                if (this.distance(nearCreature) > this.distance(creature)) {
+                    nearCreature = creature;
+                } 
+            }
+        }
+
+        return nearCreature
     }
 }
 
@@ -110,21 +296,25 @@ class Creature {
 function forward(inst, creature) {
     if (inst >= 0.5) {
         creature.pos.add(creature.facing.copy().mult(creature.speedRatio));
+        creature.energy -= creature.energyRatio*creature.speedRatio;
     }
 }
 
 function back(inst, creature) {
     if (inst >= 0.5) {
         creature.pos.sub(creature.facing.copy().mult(creature.speedRatio));
+        creature.energy -= creature.energyRatio*creature.speedRatio;
     }
 } 
 
 function left(inst, creature) {
     creature.facing.rotate(-inst);
+    creature.energy -= creature.energyRatio*inst;
 }
 
 function right(inst, creature) {
     creature.facing.rotate(inst);
+    creature.energy -= creature.energyRatio*inst;
 }
 
 function wantToGiveBirth(inst, creature) {
