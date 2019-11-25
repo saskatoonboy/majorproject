@@ -7,6 +7,7 @@
 
 let creatures = [];
 let foods = [];
+let eggs = [];
 let startingFoodCount = 100;
 
 function setup() {
@@ -32,6 +33,11 @@ function draw() {
     creature.update();
   }  
 
+  // update eggs
+  for (egg of eggs) {
+    egg.update();
+  } 
+
   // display foods
   for (food of foods) {
     food.display();
@@ -40,6 +46,11 @@ function draw() {
   // display creatures
   for (creature of creatures) {
     creature.display();
+  }
+
+  // display eggs
+  for (egg of eggs) {
+    egg.display();
   }
 
   if (startingFoodCount > foods.length) {

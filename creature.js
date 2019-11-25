@@ -245,9 +245,8 @@ class Creature {
     birth() {
 
         this.genes.brainGenes = this.brain.getGenenome();
-        let creature = new Creature(this.pos.x, this.pos.y, this.genes);
-        creature.mutate();
-        creatures.push(creature);
+        let egg = new Egg(this.pos.x, this.pos.y, this.genes);
+        eggs.push(egg);
         this.energy -= 500;
     }
 
