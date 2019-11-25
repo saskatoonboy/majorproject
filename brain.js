@@ -94,7 +94,6 @@ class Brain {
                 }
             }
         }
-        print(this);
     }
 
     addConnection() {
@@ -102,14 +101,12 @@ class Brain {
         let firstNode = this.nodes[inputNodeCnt];
 
         while (firstNode.kind !== false) {
-            print("loop 1");
             firstNode = this.nodes[floor(random(0, this.nodes.length))];
         }
 
         let secondNode = firstNode;
 
         while (secondNode === firstNode && !secondNode.kind) {
-            print("loop 2");
             secondNode = this.nodes[floor(random(0, this.nodes.length))];
         }
 
@@ -125,7 +122,6 @@ class Brain {
         let index = 0;
 
         while (!foundViableConnection) {
-            print("loop 3", index);
             if (index >= this.connections.length) {
                 return false;
             }
@@ -138,7 +134,6 @@ class Brain {
         let connectionsCopy = this.connections.slice();
 
         while (!connection.enabled) {
-            print("loop 4");
             connectionsCopy.splice(connectionsCopy.indexOf(connection), 1);
             connection = connectionsCopy[floor(0, connectionsCopy.length)];
         }
@@ -158,7 +153,6 @@ class Brain {
         let node = this.nodes[0];
 
         while (!node.kind) {
-            print("loop 5");
             node = this.nodes[floor(random(0, this.nodes.length))];
         }
 
@@ -174,7 +168,6 @@ class Brain {
         let index = 0;
 
         while (!foundViableConnection) {
-            print("loop 6", index);
             if (index >= this.connections.length) {
                 return false;
             }
@@ -187,12 +180,10 @@ class Brain {
         let connectionsCopy = this.connections.slice();
 
         while (!connection.enabled) {
-            print("loop 7");
-            print(connectionsCopy.length);
             connectionsCopy.splice(connectionsCopy.indexOf(connection), 1);
-            print(connectionsCopy.length);
+            
             let index = floor(0, connectionsCopy.length);
-            print(index, connection, connectionsCopy);
+
             connection = connectionsCopy[index];
         }
 
