@@ -13,7 +13,8 @@ let gene = {
             distanceOfVision : random(10, 1001),
             timerSpeed : floor(random(0, 1.01)*100)/100,
             communicationSensitivity : floor(random(0, 1.01)*100)/100,
-            constant : random()
+            constant : random(),
+            brainGenes : undefined
         };
     }
 };
@@ -23,7 +24,7 @@ let gene = {
 class BrainGenenome {
 
     // constructor
-    constructor(connectionGenes) {
+    constructor(connectionGenes, nodeGenes) {
 
         this.connectinonGenes = connectionGenes;
         this.nodeGenes = nodeGenes;
@@ -32,23 +33,10 @@ class BrainGenenome {
 
     // get a list of nodes from the connection genenome
     unpackNodes() {
-        let nodesList = [];
         let localNodes = [];
-        for (connectionGene of this.genes) {
-            if (nodesList.indexOf(connectionGene.from) === -1) {
-                nodesList.push(connectionGene.from);
-            }
-            if (nodesList.indexOf(connectionGene.to) === -1) {
-                nodesList.push(connectionGene.to);
-            }
+        for (let nodeGene of this.nodeGenes) {
+            localNodes.push(nodeGene.getNode());
         }
-
-        nodesList.sort((a, b) => a - b);
-
-        for (nodeId in nodesList) {
-            localNodes = nodes[nodeId];
-        }
-
         return localNodes;
 
     }
@@ -56,7 +44,7 @@ class BrainGenenome {
     // get a list of connections from the connection genenome
     unpackConnections() {
         let localConnections = [];
-        for (connectionGene of this.genes) {
+        for (let connectionGene of this.connectinonGenes) {
             localConnections.push(connectionGene.getConnection());
         }
         return localConnections;
@@ -76,5 +64,19 @@ class ConnectionGene {
 
     getConnection() {
         return connections[this.identificationNumber];
+    }
+}
+
+class NodeGene {
+    
+    // constructior
+    constructor(identification, kind, func) {
+        this.identificationNumber = identification;
+        this.kind = kind;
+        this.func = func;
+    }
+
+    getNode() {
+        return new Node(this.identificationNumber, this.kind, this.func);
     }
 }

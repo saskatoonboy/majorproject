@@ -37,6 +37,12 @@ class Brain {
             connectionGenes.push(connection.getGene());
         }
 
+        let nodeGenes = [];
+
+        for (let node of this.nodes) {
+            nodeGenes.push(node.getGene());
+        }
+
         return new BrainGenenome(connectionGenes, nodeGenes);
 
     }
@@ -211,7 +217,7 @@ class Node {
     }
 
     getGene() {
-        return new NodeGene(this.identificationNumber, this.function);
+        return new NodeGene(this.identificationNumber, this.kind, this.function);
     }
 
     reset() {
