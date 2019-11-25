@@ -49,7 +49,7 @@ function mousePressed() {
 }
 
 function keyPressed() {
-  for (creature of creatures) {
-    creature.brain.mutate(creature.mutationChance);
+  for (let i = 0; i < 100; i++) {
+    creatures.push(new Creature(random(0, width), random(0, height)));
   }
 }
