@@ -41,6 +41,10 @@ function draw() {
   for (creature of creatures) {
     creature.display();
   }
+
+  if (startingFoodCount > foods.length) {
+    foods.push(new Pellet(random(0, width), random(0, height)));
+  }
 }
 
 function mousePressed() {
