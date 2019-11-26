@@ -63,7 +63,7 @@ class Creature {
     display() {
         // remove the stroke
         noStroke();
-        let angle = this.facing.heading()+1.5;
+        let angle = this.facing.heading() + 1.5;
         push();
         // translate to allow rotation
         translate(this.pos.x, this.pos.y);
@@ -72,8 +72,8 @@ class Creature {
         // color the creature based of its genes
         fill(this.red, this.green, this.blue);
         // draw the creature
-        circle(0, 0, this.sizeRatio*50);
-        triangle(-this.sizeRatio*25, 0, this.sizeRatio*25, 0, 0, -sqrt(((this.sizeRatio*50)**2)-((this.sizeRatio*25)**2)));
+        circle(0, 0, this.sizeRatio * 50);
+        triangle(-this.sizeRatio * 25, 0, this.sizeRatio * 25, 0, 0, -sqrt(((this.sizeRatio * 50) ** 2) - ((this.sizeRatio * 25) ** 2)));
         pop();
     }
 
@@ -101,7 +101,7 @@ class Creature {
 
         // get the instructions from the brain
         let data = this.brain.getData(this.constantValue, this.hunger, this.maturity, this.health, this.speedRatio, this.nearestCreatureDistance, this.nearestCreatureAngle, this.nearestFoodDistance, this.nearestFoodAngle, this.creaturesVisible, this.foodVisible, this.red, this.green, this.blue, this.toggleAble, this.timer, this.timeAlive, this.reciving[0], this.reciving[1], this.reciving[2]);
-       
+
         // loop through every function that we call using brain output and call it
         for (let i = 0; i < instructionFunctions.length; i++) {
             let num = data[i];
@@ -130,7 +130,7 @@ class Creature {
         this.timeAlive += time;
 
         // update hunger
-        this.hunger = 1-(this.stomach/this.stomachSize);
+        this.hunger = 1 - (this.stomach / this.stomachSize);
 
         if (this.energy <= 0) {
             this.health -= 1;
@@ -147,21 +147,52 @@ class Creature {
         }
 
         if (this.stomach > 0) {
-            this.health ++;
+            this.health++;
             if (this.health > 1000) {
                 this.health = 1000;
             }
         }
-    
+
         this.eat();
 
         // if (this.wantToEat >= 0.5) {
-            
+
         // }
 
         // if (this.timeAlive > 25000) {
         //     print(this.timeAlive, this);
         // }
+
+        stroke(8);
+        line(0, 0, this.facing.x*100, this.facing.y*100);
+        print(this.facing.x, this.facing.y);
+
+        let magF = foods[0].pos.mag();
+
+        let magFS = foods[0].pos.magSq();
+
+        let magC = creatures[0].facing.mag();
+
+        let magCS = creatures[0].facing.magSq();
+
+        let magD = this.nearestFoodDistance;
+        //print(magD);
+
+        let magDS = magD * magD;
+        //print(magDS);
+
+        let topFrac = magFS + magDS - magCS
+        //print(topFrac);
+
+        let bottomFrac = 2 * magF * magD;
+        //print(bottomFrac);
+
+        let fraction = topFrac / bottomFrac;
+        //print(fraction);
+
+        let myAngle = acos(fraction);
+        //print(myAngle);
+        //print(degrees(myAngle));
     }
 
     kill() {
@@ -183,7 +214,7 @@ class Creature {
     mutate() {
         this.brain.mutate(this.mutationChance);
 
-        let comparison = floor(random(101))/100;
+        let comparison = floor(random(101)) / 100;
         if (this.mutationChance >= comparison) {
             let mutationKind = floor(random(0, 27));
 
@@ -255,7 +286,7 @@ class Creature {
     eat() {
         for (food of foods) {
             if (food.collison(this)) {
-                this.stomach += food.consume(this.stomachSize-this.stomach);
+                this.stomach += food.consume(this.stomachSize - this.stomach);
             }
         }
     }
@@ -271,7 +302,7 @@ class Creature {
         for (let food of foods) {
             if (this.distance(nearFood) > this.distance(food)) {
                 nearFood = food;
-            } 
+            }
         }
 
         return nearFood
@@ -285,7 +316,7 @@ class Creature {
             if (creature !== this) {
                 if (this.distance(nearCreature) > this.distance(creature)) {
                     nearCreature = creature;
-                } 
+                }
             }
         }
 
@@ -297,25 +328,25 @@ class Creature {
 function forward(inst, creature) {
     if (inst >= 0.5) {
         creature.pos.add(creature.facing.copy().mult(creature.speedRatio));
-        creature.energy -= creature.energyRatio*creature.speedRatio;
+        creature.energy -= creature.energyRatio * creature.speedRatio;
     }
 }
 
 function back(inst, creature) {
     if (inst >= 0.5) {
         creature.pos.sub(creature.facing.copy().mult(creature.speedRatio));
-        creature.energy -= creature.energyRatio*creature.speedRatio;
+        creature.energy -= creature.energyRatio * creature.speedRatio;
     }
-} 
+}
 
 function left(inst, creature) {
     creature.facing.rotate(-inst);
-    creature.energy -= creature.energyRatio*inst;
+    creature.energy -= creature.energyRatio * inst;
 }
 
 function right(inst, creature) {
     creature.facing.rotate(inst);
-    creature.energy -= creature.energyRatio*inst;
+    creature.energy -= creature.energyRatio * inst;
 }
 
 function wantToGiveBirth(inst, creature) {
