@@ -63,7 +63,7 @@ class Creature {
     display() {
         // remove the stroke
         noStroke();
-        let angle = this.facing.heading() + 1.5;
+        let angle = this.facing.heading() + HALF_PI;
         push();
         // translate to allow rotation
         translate(this.pos.x, this.pos.y);
@@ -165,38 +165,36 @@ class Creature {
 
         stroke(8);
         line(0, 0, this.facing.x*100, this.facing.y*100);
-        print(this.facing.x, this.facing.y);
-
-        let magF = foods[0].pos.mag();
-
-        let magFS = foods[0].pos.magSq();
-
-        let magC = creatures[0].facing.mag();
-
-        let magCS = creatures[0].facing.magSq();
-
-        let magD = this.nearestFoodDistance;
-        //print(magD);
-
-        let magDS = magD * magD;
-        //print(magDS);
-
-        let topFrac = magFS + magDS - magCS
-        //print(topFrac);
-
-        let bottomFrac = 2 * magF * magD;
-        //print(bottomFrac);
-
-        let fraction = topFrac / bottomFrac;
-        //print(fraction);
-
-        let myAngle = acos(fraction);
-        //print(myAngle);
-        //print(degrees(myAngle));
     }
 
     kill() {
         creatures.splice(creatures.indexOf(this), 1);
+    }
+
+    getAngle() {
+
+        let magFS = foods[0].pos.magSq();
+
+        let magC = creatures[0].pos.mag();
+
+        let magCS = creatures[0].pos.magSq();
+
+        let magD = this.nearestFoodDistance;
+
+        let magDS = magD * magD;
+
+        let topFrac = magCS + magDS - magFS
+
+        let bottomFrac = 2 * magC * magD;
+
+        let fraction = topFrac / bottomFrac;
+
+        let myAngle = acos(fraction);
+        print(myAngle);
+    }
+
+    getBetween() {
+        return this.distanceVector(foods[0]).angleBetween(this.facing);
     }
 
     digest() {
@@ -292,7 +290,11 @@ class Creature {
     }
 
     distance(obj) {
-        return this.pos.copy().sub(obj.pos).mag();
+        return this.distanceVector(obj).mag();
+    }
+
+    distanceVector(obj) {
+        return this.pos.copy().sub(obj.pos);
     }
 
     findNearestFood() {
