@@ -12,11 +12,20 @@ class Pellet {
     }
 
     display() {
+        push();
         translate(this.pos.x, this.pos.y);
         noStroke();
         fill(41, 140, 72);
         circle(0, 0, this.size*10);
-        translate(-this.pos.x, -this.pos.y);
+        pop();
+
+        push();
+        translate(width/2, height/2);
+        stroke(0, 0, 0);
+        strokeWeight(3);
+        let pos = this.pos.copy().normalize();
+        line(0, 0, pos.x*100, pos.y*100);
+        pop();
     }
 
     update() {

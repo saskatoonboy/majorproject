@@ -163,8 +163,22 @@ class Creature {
         //     print(this.timeAlive, this);
         // }
 
-        stroke(8);
+        push();
+        translate(width/2, height/2);
+        stroke(255, 0, 0);
+        strokeWeight(3);
         line(0, 0, this.facing.x*100, this.facing.y*100);
+
+        stroke(0, 255, 0);
+        strokeWeight(3);
+        let pos = this.pos.copy().normalize();
+        line(0, 0, pos.x*100, pos.y*100);
+
+        stroke(0, 0, 255);
+        strokeWeight(3);
+        let vec = this.distanceVector(foods[0]).normalize();
+        line(0, 0, vec.x*100, vec.y*100);
+        pop();
     }
 
     kill() {
