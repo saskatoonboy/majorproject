@@ -16,11 +16,8 @@ function setup() {
   // randomly place food on the screen
   for (let i = 0; i < startingFoodCount; i++) {
     // put a food pellet into the food array
-    //foods.push(new Pellet(random(0, width), random(0, height)));
+    foods.push(new Pellet(random(0, width), random(0, height)));
   }
-
-  foods.push(new Pellet(100, 200));
-  creatures.push(new Creature(100, 100));
 }
 
 function draw() {
@@ -56,11 +53,9 @@ function draw() {
     egg.display();
   }
 
-  // if (startingFoodCount > foods.length) {
-  //   foods.push(new Pellet(random(0, width), random(0, height)));
-  // }
-
-  creatures[0].health = 1000;
+  if (startingFoodCount > foods.length) {
+    foods.push(new Pellet(random(0, width), random(0, height)));
+  }
 }
 
 function mousePressed() {
