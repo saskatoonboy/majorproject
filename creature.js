@@ -114,18 +114,18 @@ class Creature {
         }
 
         // if the creature has moved of the side of the screen on the x axis the loop it to the other side
-        //if (this.pos.x < 0) {
-            //this.pos.x += width;
-        //} else if (this.pos.x > width) {
-            //this.pos.x -= width;
-        //}
+        if (this.pos.x < 0) {
+            this.pos.x += width;
+        } else if (this.pos.x > width) {
+            this.pos.x -= width;
+        }
 
         // if the creature has moved of the side of the screen on the y axis the loop it to the other side
-        //if (this.pos.y < 0) {
-            //this.pos.y += height;
-        //} else if (this.pos.y > height) {
-            //this.pos.y -= height;
-        //}
+        if (this.pos.y < 0) {
+            this.pos.y += height;
+        } else if (this.pos.y > height) {
+            this.pos.y -= height;
+        }
 
         // updating time
         let time = millis() - this.lastMilis;
@@ -167,28 +167,6 @@ class Creature {
         // if (this.timeAlive > 25000) {
         //     print(this.timeAlive, this);
         // }
-
-        push();
-        translate(width/2, height/2);
-        stroke(255, 0, 0);
-        strokeWeight(3);
-        line(0, 0, this.facing.x*100, this.facing.y*100);
-
-        stroke(0, 255, 0);
-        strokeWeight(3);
-        let pos = this.pos.copy().normalize();
-        line(0, 0, pos.x*100, pos.y*100);
-
-        stroke(0, 0, 255);
-        strokeWeight(3);
-        let vec = this.distanceVector(foods[0]).normalize();
-        line(0, 0, vec.x*100, vec.y*100);
-        pop();
-        
-        // temp
-        if (foods.length > 0) {
-            left(creature.getAngle(foods[0]), creature);
-        }
     }
 
     kill() {
@@ -196,7 +174,7 @@ class Creature {
     }
 
     getAngle(obj) {
-        return this.distanceVector(obj).angleBetween(this.facing);
+        return this.distanceVector(obj).angleBetween(this.facing) - PI;
     }
 
     digest() {
