@@ -80,22 +80,27 @@ class Creature {
     // update the creature
     update() {
 
-        let nearestCreature = this.findNearestCreature();
-        let creatureDistance = this.distance(nearestCreature);
-
         let nearestFood = this.findNearestFood();
         let foodDistance = this.distance(nearestFood);
 
-        if (creatureDistance <= this.distanceOfVision) {
-            this.nearestCreature = nearestCreature;
-            this.nearestCreatureDistance = creatureDistance;
-            this.nearestCreatureAngle = nearestCreature.pos.heading()
+
+        let nearestCreature = this.findNearestCreature();
+
+        if (nearestCreature !== undefined) {
+
+            let creatureDistance = this.distance(nearestCreature);
+
+            if (creatureDistance <= this.distanceOfVision) {
+                this.nearestCreature = nearestCreature;
+                this.nearestCreatureDistance = creatureDistance;
+                this.nearestCreatureAngle = this.getAngle(nearestCreature);
+            }
         }
 
         if (foodDistance <= this.distanceOfVision) {
             this.nearestFood = nearestFood;
             this.nearestFoodDistance = foodDistance;
-            this.nearestFoodAngle = nearestFood.pos.heading()
+            this.nearestFoodAngle = this.getAngle(nearestFood);
         }
 
 
@@ -185,30 +190,8 @@ class Creature {
         creatures.splice(creatures.indexOf(this), 1);
     }
 
-    getAngle() {
-
-        let magFS = foods[0].pos.magSq();
-
-        let magC = creatures[0].pos.mag();
-
-        let magCS = creatures[0].pos.magSq();
-
-        let magD = this.nearestFoodDistance;
-
-        let magDS = magD * magD;
-
-        let topFrac = magCS + magDS - magFS
-
-        let bottomFrac = 2 * magC * magD;
-
-        let fraction = topFrac / bottomFrac;
-
-        let myAngle = acos(fraction);
-        print(myAngle);
-    }
-
-    getBetween() {
-        return this.distanceVector(foods[0]).angleBetween(this.facing);
+    getAngle(obj) {
+        return this.distanceVector(obj).angleBetween(this.facing);
     }
 
     digest() {
@@ -326,11 +309,13 @@ class Creature {
 
     findNearestCreature() {
 
-        let nearCreature = creatures[0];
+        let nearCreature;
 
         for (let creature of creatures) {
             if (creature !== this) {
-                if (this.distance(nearCreature) > this.distance(creature)) {
+                if (nearCreature === undefined) {
+                    nearCreature = creature;
+                } else if (this.distance(nearCreature) > this.distance(creature)) {
                     nearCreature = creature;
                 }
             }
