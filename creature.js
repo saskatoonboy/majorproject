@@ -114,18 +114,18 @@ class Creature {
         }
 
         // if the creature has moved of the side of the screen on the x axis the loop it to the other side
-        if (this.pos.x < 0) {
-            this.pos.x += width;
-        } else if (this.pos.x > width) {
-            this.pos.x -= width;
-        }
+        //if (this.pos.x < 0) {
+            //this.pos.x += width;
+        //} else if (this.pos.x > width) {
+            //this.pos.x -= width;
+        //}
 
         // if the creature has moved of the side of the screen on the y axis the loop it to the other side
-        if (this.pos.y < 0) {
-            this.pos.y += height;
-        } else if (this.pos.y > height) {
-            this.pos.y -= height;
-        }
+        //if (this.pos.y < 0) {
+            //this.pos.y += height;
+        //} else if (this.pos.y > height) {
+            //this.pos.y -= height;
+        //}
 
         // updating time
         let time = millis() - this.lastMilis;
