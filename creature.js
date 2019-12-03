@@ -184,6 +184,11 @@ class Creature {
         let vec = this.distanceVector(foods[0]).normalize();
         line(0, 0, vec.x*100, vec.y*100);
         pop();
+        
+        // temp
+        if (foods.length > 0) {
+            right(creature.getAngle(foods[0]), creature);
+        }
     }
 
     kill() {
