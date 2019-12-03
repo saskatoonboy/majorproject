@@ -187,7 +187,7 @@ class Creature {
         
         // temp
         if (foods.length > 0) {
-            right(creature.getAngle(foods[0]), creature);
+            left(creature.getAngle(foods[0]), creature);
         }
     }
 
