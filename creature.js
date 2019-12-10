@@ -158,15 +158,10 @@ class Creature {
             }
         }
 
-        this.eat();
 
-        // if (this.wantToEat >= 0.5) {
-
-        // }
-
-        // if (this.timeAlive > 25000) {
-        //     print(this.timeAlive, this);
-        // }
+        if (this.wantToEat >= 0.2) {
+            this.eat();
+        }
     }
 
     kill() {
@@ -262,11 +257,34 @@ class Creature {
     }
 
     eat() {
-        for (food of foods) {
-            if (food.collison(this)) {
-                this.stomach += food.consume(this.stomachSize - this.stomach);
+
+        if (this.nearestFood) {
+            if (this.nearestCreature) {
+                if (this.nearestFoodDistance > this.nearestCreatureDistance) {
+                    if (this.collison(this.nearestCreature) && this.sizeRatio >= this.nearestCreature.sizeRatio) {
+                        this.stomach += this.nearestCreature.consume(this.stomachSize - this.stomach);
+                    }
+                } else {
+                    if (this.nearestFood.collison(this)) {
+                        this.stomach += this.nearestFood.consume(this.stomachSize - this.stomach);
+                    }
+                }
             }
         }
+    }
+
+    consume(stomachSpace) {
+        if (stomachSpace >= this.health) {
+            this.kill();
+            return this.health;
+        } else {
+            this.health -= stomachSpace;
+            return stomachSpace;
+        }
+    }
+
+    collison(creature) {
+        return creature.distance(this) <= creature.sizeRatio*25+this.sizeRatio*25;
     }
 
     distance(obj) {
