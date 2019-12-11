@@ -1,15 +1,27 @@
 let instructionFunctions = [forward, back, left, right, wantToGiveBirth, wantToEat, wantToMate, resetTimer, com1, com2, com3];
 
+const sizeMultiplier = 50;
+
 // creature that is evolving over time
-class Creature {
+class Creature extends Entity{
     // construct the creature class
     constructor(x, y, genes) {
+
+
+        // if there were not any genes given generate them randomly
+        if (genes === undefined) {
+            genes = gene.randomGenes();
+        }
+
+        //circle(0, 0, this.sizeRatio * 50);
+        //triangle(, 0, this.sizeRatio * 25, 0, 0, );
+        super(x, y, [["c", 0, 0, color(genes.red, genes.green, genes.blue), genes.size*sizeMultiplier], ["t", 0, 0, color(genes.red, genes.green, genes.blue), {x1: -genes.size * sizeMultiplier/2, y1: 0, x2: genes.size * sizeMultiplier/2, y2: 0, x3: 0, y3: -sqrt(((genes.size * sizeMultiplier) ** 2) - ((genes.size * sizeMultiplier/2) ** 2))}]]);
+
         // base stats of creature
         this.energy = 0;
         this.stomach = 0; // WIP
         this.stomachSize = 500; // WIP
         this.health = 1000;
-        this.pos = createVector(x, y);
         this.facing = createVector(floor(random(0, width)), floor(random(0, height))).sub(this.pos).normalize();
         this.timer = 0;
         this.maturity;
@@ -23,13 +35,7 @@ class Creature {
         this.lastMilis = millis();
         this.meatbolism = 3; // WIP
         this.energyRatio = 1; // WIP
-
-        // if there were not any genes given generate them randomly
-        if (genes === undefined) {
-            this.genes = gene.randomGenes();
-        } else {
-            this.genes = genes;
-        }
+        this.genes = genes;
 
         // get physical traites from genes
         this.speedRatio = this.genes.speed;
@@ -69,11 +75,8 @@ class Creature {
         translate(this.pos.x, this.pos.y);
         // rotate based of the direction the creature is facing 1.5 is a constant to offset the heading value properly
         rotate(angle);
-        // color the creature based of its genes
-        fill(this.red, this.green, this.blue);
         // draw the creature
-        circle(0, 0, this.sizeRatio * 50);
-        triangle(-this.sizeRatio * 25, 0, this.sizeRatio * 25, 0, 0, -sqrt(((this.sizeRatio * 50) ** 2) - ((this.sizeRatio * 25) ** 2)));
+        this.draw();
         pop();
     }
 
@@ -342,11 +345,21 @@ function back(inst, creature) {
 }
 
 function left(inst, creature) {
+    if (inst > 0.3) {
+        inst = 0.3;
+    } else if (inst < -0.3) {
+        inst = -0.3
+    }
     creature.facing.rotate(-inst);
     creature.energy -= creature.energyRatio * inst;
 }
 
 function right(inst, creature) {
+    if (inst > 0.3) {
+        inst = 0.3;
+    } else if (inst < -0.3) {
+        inst = -0.3
+    }
     creature.facing.rotate(inst);
     creature.energy -= creature.energyRatio * inst;
 }

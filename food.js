@@ -1,27 +1,37 @@
-class Pellet {
+
+class Edible extends Entity{
+    constructor (x, y, shapes) {
+        super(x, y, shapes);
+    }
+}
+
+class Pellet extends Edible{
     constructor(x, y, energy) {
-        this.maxEnergy = 500;
+        let maxEnergy = 500;
         if (energy === undefined) {
-            this.energy = this.maxEnergy;
-        } else {
-            this.energy = energy;
-            this.maxEnergy = energy;
+            energy = maxEnergy;
         }
+        super(x, y, [["c", 0, 0, color(41, 140, 72), energy*10/maxEnergy]]);
+        
+        this.maxEnergy = maxEnergy;
+        this.energy = energy;
+        this.maxEnergy = energy;
         this.size = this.energy/this.maxEnergy;
-        this.pos = createVector(x, y);
     }
 
     display() {
         push();
         translate(this.pos.x, this.pos.y);
         noStroke();
-        fill(41, 140, 72);
-        circle(0, 0, this.size*10);
+        this.draw();
         pop();
     }
 
     update() {
         this.size = this.energy/this.maxEnergy;
+        let circles = this.getCircles();
+        circles[0].d = this.size * 10;
+        this.setCircles(circles)
     }
 
     collison(creature) {

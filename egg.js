@@ -1,20 +1,17 @@
 
-class Egg {
+class Egg extends Entity {
     constructor(x, y, genes) {
+        super(x, y, [["c", 0, 0, color(genes.red, genes.green, genes.blue), 25]])
         this.timeTillHatch = genes.timeToHatch;
         this.lastTimeUpdated = millis();
         this.genes = genes;
-        this.pos = createVector(x, y);
-        this.color = color(genes.red, genes.green, genes.blue);
     }
 
     display() {
-        noStroke();
         push();
 
         translate(this.pos.x, this.pos.y);
-        fill(this.color);
-        circle(0, 0, 25);
+        this.draw();
 
         pop();
     }
