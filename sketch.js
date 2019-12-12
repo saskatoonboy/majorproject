@@ -5,10 +5,7 @@
 // Extra for Experts:
 // - 
 
-let creatures = [];
-let foods = [];
-let eggs = [];
-let startingFoodCount = 100;
+const startingFoodCount = 100;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -70,8 +67,10 @@ function keyPressed() {
 }
 
 class Entity {
-  constructor(x, y, shapes) {
+  constructor(x, y, shapes, entityArray) {
     this.pos = createVector(x, y);
+    this.entityArray = entityArray;
+    this.trueSize = 0;
     this.circles = [];
     this.triangles = [];
     this.rectangles = [];
@@ -84,9 +83,13 @@ class Entity {
         this.triangles.push({x: shape[1], y: shape[2], p: shape[4], colour: shape[3]});
       }
     }
+
+    if (entityArray !== undefined) {
+      entityArray.push(this);
+    }
   }
 
-  draw() {
+  display() {
     noStroke();
     for (let shape of this.circles) {
       fill(shape.colour);
@@ -102,11 +105,29 @@ class Entity {
     }
   }
 
+  remove() {
+    if (this.entityArray !== undefined) {
+      this.entityArray.splice(this.entityArray.indexOf(this), 1);
+    }
+  }
+
   getCircles() {
     return this.circles;
   }
 
   setCircles(circles) {
     this.circles = circles;
+  }
+
+  collison(obj) {
+      return obj.distance(this) <= obj.trueSize/2+this.trueSize/2;
+  }
+
+  distance(obj) {
+      return this.distanceVector(obj).mag();
+  }
+
+  distanceVector(obj) {
+      return this.pos.copy().sub(obj.pos);
   }
 }

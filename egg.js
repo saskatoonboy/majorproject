@@ -1,7 +1,8 @@
+let eggs = [];
 
 class Egg extends Entity {
     constructor(x, y, genes) {
-        super(x, y, [["c", 0, 0, color(genes.red, genes.green, genes.blue), 25]])
+        super(x, y, [["c", 0, 0, color(genes.red, genes.green, genes.blue), 25]], eggs)
         this.timeTillHatch = genes.timeToHatch;
         this.lastTimeUpdated = millis();
         this.genes = genes;
@@ -11,7 +12,7 @@ class Egg extends Entity {
         push();
 
         translate(this.pos.x, this.pos.y);
-        this.draw();
+        super.display();
 
         pop();
     }
@@ -26,11 +27,10 @@ class Egg extends Entity {
     }
 
     hatch() {
-        eggs.splice(eggs.indexOf(this), 1);
+        this.remove();
 
         let creature = new Creature(this.pos.x, this.pos.y, this.genes)
 
         creature.mutate();
-        creatures.push(creature);
     }
 }

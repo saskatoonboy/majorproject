@@ -1,9 +1,10 @@
 let instructionFunctions = [forward, back, left, right, wantToGiveBirth, wantToEat, wantToMate, resetTimer, com1, com2, com3];
+let creatures = [];
 
 const sizeMultiplier = 50;
 
 // creature that is evolving over time
-class Creature extends Entity{
+class Creature extends Edible{
     // construct the creature class
     constructor(x, y, genes) {
 
@@ -15,7 +16,7 @@ class Creature extends Entity{
 
         //circle(0, 0, this.sizeRatio * 50);
         //triangle(, 0, this.sizeRatio * 25, 0, 0, );
-        super(x, y, [["c", 0, 0, color(genes.red, genes.green, genes.blue), genes.size*sizeMultiplier], ["t", 0, 0, color(genes.red, genes.green, genes.blue), {x1: -genes.size * sizeMultiplier/2, y1: 0, x2: genes.size * sizeMultiplier/2, y2: 0, x3: 0, y3: -sqrt(((genes.size * sizeMultiplier) ** 2) - ((genes.size * sizeMultiplier/2) ** 2))}]]);
+        super(x, y, [["c", 0, 0, color(genes.red, genes.green, genes.blue), genes.size*sizeMultiplier], ["t", 0, 0, color(genes.red, genes.green, genes.blue), {x1: -genes.size * sizeMultiplier/2, y1: 0, x2: genes.size * sizeMultiplier/2, y2: 0, x3: 0, y3: -sqrt(((genes.size * sizeMultiplier) ** 2) - ((genes.size * sizeMultiplier/2) ** 2))}]], creatures);
 
         // base stats of creature
         this.energy = 0;
@@ -60,6 +61,7 @@ class Creature extends Entity{
         this.nearestCreatureDistance = 0;
 
         this.stomachSize = this.sizeRatio * 1000;
+        this.trueSize = this.sizeRatio * sizeMultiplier;
 
         // create bratin
         this.brain = new Brain(this.genes.brainGenes);
@@ -67,7 +69,6 @@ class Creature extends Entity{
 
     // display the creature on screen
     display() {
-        // remove the stroke
         noStroke();
         let angle = this.facing.heading() + HALF_PI;
         push();
@@ -76,7 +77,7 @@ class Creature extends Entity{
         // rotate based of the direction the creature is facing 1.5 is a constant to offset the heading value properly
         rotate(angle);
         // draw the creature
-        this.draw();
+        super.display();
         pop();
     }
 
@@ -84,7 +85,6 @@ class Creature extends Entity{
     update() {
 
         let nearestFood = this.findNearestFood();
-        let foodDistance = this.distance(nearestFood);
 
 
         let nearestCreature = this.findNearestCreature();
@@ -99,11 +99,15 @@ class Creature extends Entity{
                 this.nearestCreatureAngle = this.getAngle(nearestCreature);
             }
         }
+        if (nearestFood !== undefined) {
+            
+            let foodDistance = this.distance(nearestFood);
 
-        if (foodDistance <= this.distanceOfVision) {
-            this.nearestFood = nearestFood;
-            this.nearestFoodDistance = foodDistance;
-            this.nearestFoodAngle = this.getAngle(nearestFood);
+            if (foodDistance <= this.distanceOfVision) {
+                this.nearestFood = nearestFood;
+                this.nearestFoodDistance = foodDistance;
+                this.nearestFoodAngle = this.getAngle(nearestFood);
+            }
         }
 
 
@@ -145,7 +149,7 @@ class Creature extends Entity{
         }
 
         if (this.health <= 0) {
-            this.kill();
+            this.remove();
         }
 
         this.digest();
@@ -162,13 +166,9 @@ class Creature extends Entity{
         }
 
 
-        if (this.wantToEat >= 0.2) {
+        if (this.wantToEat >= 0.2 || this.energy < 0) {
             this.eat();
         }
-    }
-
-    kill() {
-        creatures.splice(creatures.indexOf(this), 1);
     }
 
     getAngle(obj) {
@@ -185,6 +185,15 @@ class Creature extends Entity{
                 this.stomach = 0;
             }
         }
+    }
+
+    useEnergy(amount) {
+        if (this.energy < amount) {
+            return false;
+        }
+
+        this.energy -= amount;
+        return true;
     }
 
     mutate() {
@@ -255,12 +264,10 @@ class Creature extends Entity{
 
         this.genes.brainGenes = this.brain.getGenenome();
         let egg = new Egg(this.pos.x, this.pos.y, this.genes);
-        eggs.push(egg);
         this.energy -= 500;
     }
 
     eat() {
-
         if (this.nearestFood) {
             if (this.nearestCreature) {
                 if (this.nearestFoodDistance > this.nearestCreatureDistance) {
@@ -274,28 +281,6 @@ class Creature extends Entity{
                 }
             }
         }
-    }
-
-    consume(stomachSpace) {
-        if (stomachSpace >= this.health) {
-            this.kill();
-            return this.health;
-        } else {
-            this.health -= stomachSpace;
-            return stomachSpace;
-        }
-    }
-
-    collison(creature) {
-        return creature.distance(this) <= creature.sizeRatio*25+this.sizeRatio*25;
-    }
-
-    distance(obj) {
-        return this.distanceVector(obj).mag();
-    }
-
-    distanceVector(obj) {
-        return this.pos.copy().sub(obj.pos);
     }
 
     findNearestFood() {
