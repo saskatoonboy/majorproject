@@ -4,19 +4,19 @@ let creatures = [];
 const sizeMultiplier = 50;
 
 // creature that is evolving over time
-class Creature extends Edible{
+class Creature extends Edible {
     // construct the creature class
-    constructor(x, y, genes) {
+    constructor(x, y, genes, isHerbivore) {
 
 
         // if there were not any genes given generate them randomly
         if (genes === undefined) {
-            genes = gene.randomGenes();
+            genes = gene.randomGenes(isHerbivore);
         }
 
         //circle(0, 0, this.sizeRatio * 50);
         //triangle(, 0, this.sizeRatio * 25, 0, 0, );
-        super(x, y, [["c", 0, 0, color(genes.red, genes.green, genes.blue), genes.size*sizeMultiplier], ["t", 0, 0, color(genes.red, genes.green, genes.blue), {x1: -genes.size * sizeMultiplier/2, y1: 0, x2: genes.size * sizeMultiplier/2, y2: 0, x3: 0, y3: -sqrt(((genes.size * sizeMultiplier) ** 2) - ((genes.size * sizeMultiplier/2) ** 2))}]], creatures);
+        super(x, y, [["c", 0, 0, color(genes.red, genes.green, genes.blue), genes.size * sizeMultiplier], ["t", 0, 0, color(genes.red, genes.green, genes.blue), { x1: -genes.size * sizeMultiplier / 2, y1: 0, x2: genes.size * sizeMultiplier / 2, y2: 0, x3: 0, y3: -sqrt(((genes.size * sizeMultiplier) ** 2) - ((genes.size * sizeMultiplier / 2) ** 2)) }]], creatures);
 
         // base stats of creature
         this.energy = 0;
@@ -34,7 +34,6 @@ class Creature extends Edible{
         this.reciving = [0, 0, 0];
         this.timeAlive = 0; // millis
         this.lastMilis = millis();
-        this.meatbolism = 3; // WIP
         this.energyRatio = 1; // WIP
         this.genes = genes;
 
@@ -52,6 +51,8 @@ class Creature extends Edible{
         this.timerSpeed = this.genes.timerSpeed;
         this.communicationSensitivity = this.genes.communicationSensitivity;
         this.constantValue = this.genes.constant;
+        this.metabolism = this.genes.metabolism;
+
         this.toggleAble = 0;
         this.foodVisible = 0;
         this.creaturesVisible = 0;
@@ -100,7 +101,7 @@ class Creature extends Edible{
             }
         }
         if (nearestFood !== undefined) {
-            
+
             let foodDistance = this.distance(nearestFood);
 
             if (foodDistance <= this.distanceOfVision) {
@@ -177,9 +178,9 @@ class Creature extends Edible{
 
     digest() {
         if (this.stomach > 0) {
-            if (this.stomach > this.meatbolism) {
-                this.stomach -= this.meatbolism;
-                this.energy += this.meatbolism;
+            if (this.stomach > this.metabolism) {
+                this.stomach -= this.metabolism;
+                this.energy += this.metabolism;
             } else {
                 this.energy += this.stomach;
                 this.stomach = 0;
@@ -263,7 +264,7 @@ class Creature extends Edible{
     birth() {
 
         this.genes.brainGenes = this.brain.getGenenome();
-        let egg = new Egg(this.pos.x, this.pos.y, this.genes);
+        new Egg(this.pos.x, this.pos.y, this.genes);
         this.energy -= 500;
     }
 
@@ -313,6 +314,41 @@ class Creature extends Edible{
         return nearCreature
     }
 }
+
+
+class Carnivore extends Creature {
+
+    constructor(x, y, genes) {
+        super(x, y, genes, false);
+    }
+
+    eat() {
+        if (this.nearestCreature) {
+            if (this.collison(this.nearestCreature) && this.sizeRatio >= this.nearestCreature.sizeRatio) {
+                this.stomach += this.nearestCreature.consume(this.stomachSize - this.stomach);
+            }
+        }
+    }
+
+}
+
+
+class Herbivore extends Creature {
+
+    constructor(x, y, genes) {
+        super(x, y, genes, true);
+    }
+
+    eat() {
+        if (this.nearestFood) {
+            if (this.collison(this.nearestFood)) {
+                this.stomach += this.nearestFood.consume(this.stomachSize - this.stomach);
+            }
+        }
+    }
+
+}
+
 
 // move the creature forward if the brain sent a 0.5 or greater
 function forward(inst, creature) {

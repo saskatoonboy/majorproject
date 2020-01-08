@@ -1,6 +1,7 @@
 let gene = {
-    randomGenes : function() {
+    randomGenes : function(isHerbivore) {
         return geneTemplate = {
+            herbivore : isHerbivore,
             speed : floor(random(0, 1.01)*100)/100,
             size : floor(random(0.1, 1.01)*100)/100,
             red : floor(random(0, 256)),
@@ -14,6 +15,7 @@ let gene = {
             timerSpeed : floor(random(0, 1.01)*100)/100,
             communicationSensitivity : floor(random(0, 1.01)*100)/100,
             constant : random(),
+            metabolism : floor(random(1, 6)),
             brainGenes : undefined
         };
     }

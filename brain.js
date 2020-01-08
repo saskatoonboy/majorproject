@@ -22,6 +22,8 @@ class Brain {
             for (let i = 0; i < outputNodeCnt; i++) {
                 this.nodes.push(new Node(this.nodes.length, false));
             }
+
+            this.connections.push(new Connection(this.nodes[0], this.nodes[20], 1));
             
         } else {
             this.nodes = genes.unpackNodes();

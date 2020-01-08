@@ -29,8 +29,25 @@ class Egg extends Entity {
     hatch() {
         this.remove();
 
-        let creature = new Creature(this.pos.x, this.pos.y, this.genes)
+        let creature;
 
-        creature.mutate();
+        if (this.genes.herbivore === 1) {
+
+            creature = new Herbivore(this.pos.x, this.pos.y, this.genes)
+        
+        } else {
+
+            creature = new Carnivore(this.pos.x, this.pos.y, this.genes)
+        
+        }
+
+
+
+
+        for (let i = 0; i < 5; i++) {
+            creature.mutate();
+        }
+
+
     }
 }

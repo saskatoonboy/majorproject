@@ -62,7 +62,11 @@ function mousePressed() {
 
 function keyPressed() {
   for (let i = 0; i < 100; i++) {
-    creatures.push(new Creature(random(0, width), random(0, height)));
+    if (random < 0.5) {
+      new Carnivore(random(0, width), random(0, height));
+    } else {
+      new Herbivore(random(0, width), random(0, height));
+    }
   }
 }
 
