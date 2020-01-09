@@ -7,10 +7,12 @@
 
 const startingFoodCount = 100;
 let buttons = [];
+let menus = [];
 let simulating = false;
 let simulatingSwitchedThisFrame = false;
 let RESUMEBUTTON;
 let PAUSEBUTTON;
+let STARTMENU;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -21,12 +23,17 @@ function setup() {
     foods.push(new Pellet(random(0, width), random(0, height)));
   }
 
+  STARTMENU = new Menu(0, 0, width, height, color(100, 0, 255), color(100, 200, 0));
+  STARTMENU.addText(0, 0, width, height, "This is a my evolution emulator the goal of this project is to emulate how evolution works. If you don't know already evolution is when a creature mutates in a good or bad way. If it is good then the creature will probably live, if not then it will probably die. My creatures will simulate physical and behavioral trates. Have fun.", 24);
+
+  new Button(0, 0, width, height, "Start", 48, color(100, 0, 255), function(){
+    STARTMENU.show();
+  }, null, true, false);
+
   PAUSEBUTTON = new Button(10, 10, 100, 50, "Pause", 32, color(255, 0, 0), pause, LEFT);
   RESUMEBUTTON = new Button(10, 10, 100, 50, "Resume", 32, color(0, 255, 0), resume, LEFT);
 
-  buttons.push(PAUSEBUTTON);
-  buttons.push(RESUMEBUTTON);
-
+  RESUMEBUTTON.hide();
   PAUSEBUTTON.hide();
 }
 
@@ -76,6 +83,10 @@ function draw() {
 
   for (button of buttons) {
     button.display();
+  }
+
+  for (menu of menus) {
+    menu.display();
   }
 }
 
