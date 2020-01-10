@@ -24,7 +24,11 @@ function setup() {
   }
 
   STARTMENU = new Menu(0, 0, width, height, color(100, 0, 255), color(100, 200, 0));
-  STARTMENU.addText(0, 0, width, height, "This is a my evolution emulator the goal of this project is to emulate how evolution works. If you don't know already evolution is when a creature mutates in a good or bad way. If it is good then the creature will probably live, if not then it will probably die. My creatures will simulate physical and behavioral trates. Have fun.", 24);
+
+  STARTMENU.addText(0, 0, width, height/2, "This is a my evolution emulator the goal of this project is to emulate how evolution works. If you don't know already evolution is when a creature mutates in a good or bad way. If it is good then the creature will probably live, if not then it will probably die. My creatures will emulate physical and behavioral trates. Have fun.", 24);
+  STARTMENU.addButton(100, height/2, 100, 200, "Tutorail", 22, function() {
+    STARTMENU.hide();
+  });
 
   new Button(0, 0, width, height, "Start", 48, color(100, 0, 255), function(){
     STARTMENU.show();
@@ -41,39 +45,43 @@ function draw() {
   background(220);
   simulatingSwitchedThisFrame = false;
 
-  for (button of buttons) {
+  for (let button of buttons) {
     button.hover(mouseX, mouseY);
+  }
+
+  for (let menu of menus) {
+    menu.hover(mouseX, mouseY);
   }
 
   if (simulating) {
     // update foods
-    for (food of foods) {
+    for (let food of foods) {
       food.update();
     }
   
     // update creatures
-    for (creature of creatures) {
+    for (let creature of creatures) {
       creature.update();
     }  
   
     // update eggs
-    for (egg of eggs) {
+    for (let egg of eggs) {
       egg.update();
     } 
   }
 
   // display foods
-  for (food of foods) {
+  for (let food of foods) {
     food.display();
   }
 
   // display creatures
-  for (creature of creatures) {
+  for (let creature of creatures) {
     creature.display();
   }
 
   // display eggs
-  for (egg of eggs) {
+  for (let egg of eggs) {
     egg.display();
   }
 
@@ -81,11 +89,11 @@ function draw() {
     foods.push(new Pellet(random(0, width), random(0, height)));
   }
 
-  for (button of buttons) {
+  for (let button of buttons) {
     button.display();
   }
 
-  for (menu of menus) {
+  for (let menu of menus) {
     menu.display();
   }
 }
@@ -94,8 +102,12 @@ function mouseClicked() {
 
   let buttonWorked = false;
 
-  for (button of buttons) {
+  for (let button of buttons) {
     buttonWorked = button.click(mouseButton);
+  }
+
+  for (let menu of menus) {
+    buttonWorked = menu.click(mouseX, mouseY, mouseButton);
   }
 
   if (buttonWorked) {

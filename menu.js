@@ -9,6 +9,7 @@ class TextBox {
     }
 
     display() {
+        fill(0);
         textSize(this.textSize);
         textAlign(CENTER, CENTER);
         text(this.text, this.x, this.y, this.width, this.height);
@@ -44,26 +45,50 @@ class Menu {
             fill(this.bgColour);
             rect(this.x, this.y, this.width, this.height);
 
-            for (button of this.buttons) {
+            for (let button of this.buttons) {
                 button.display();
             }
 
-            for (textBox of this.textBoxes) {
+            for (let textBox of this.textBoxes) {
                 textBox.display();
             }
         }
     }
 
+    hover(x, y) {
+        if (!this.hidden) {
+            for (let button of this.buttons) {
+                button.hover(x, y);
+            }
+        }
+    }
+
+    click(x, y, mouseButton) {
+        if (!this.hidden) {
+            if (x >= this.x && x <= this.width && y >= this.y && y <= this.height) {
+
+                for (let button of this.buttons) {
+                    print(button);
+                    button.click(mouseButton);
+                }
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     hide() {
         this.hidden = true;
-        for (button of this.buttons) {
+        for (let button of this.buttons) {
             button.hide();
         }
     }
 
     show() {
         this.hidden = false;
-        for (button of this.buttons) {
+        for (let button of this.buttons) {
             button.show();
         }
     }
