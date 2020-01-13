@@ -18,7 +18,7 @@ class Entity {
         }
       }
   
-      if (entityArray !== undefined) {
+      if (entityArray !== undefined && entityArray.length < 200) {
         entityArray.push(this);
       }
     }

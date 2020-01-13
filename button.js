@@ -34,13 +34,14 @@ class Button {
     }
 
     hover(x, y) {
-        this.isHover = x >= this.x && x <= this.w && y >= this.y && y <= this.h;
+        this.isHover = x >= this.x && x <= this.x + this.w && y >= this.y && y <= this.y + this.h;
     }
 
     click(button) {
         if (!this.hidden) {
-            if (this.button !== null) {
+            if (this.button !== undefined) {
                 if (button !== this.button) {
+                    print(this.button);
                     return false;
                 }
             }

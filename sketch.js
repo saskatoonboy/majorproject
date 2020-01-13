@@ -26,19 +26,39 @@ function setup() {
   STARTMENU = new Menu(0, 0, width, height, color(100, 0, 255), color(100, 200, 0));
 
   STARTMENU.addText(0, 0, width, height/2, "This is a my evolution emulator the goal of this project is to emulate how evolution works. If you don't know already evolution is when a creature mutates in a good or bad way. If it is good then the creature will probably live, if not then it will probably die. My creatures will emulate physical and behavioral trates. Have fun.", 24);
-  STARTMENU.addButton(100, height/2, 100, 200, "Tutorail", 22, function() {
+  STARTMENU.addButton(100, height/2, 100, 200, "Tutorial", 22, function() {
     STARTMENU.hide();
+    RESUMEBUTTON.show();
+    ADD100BUTTON.show();
+    for (let i = 0; i < 200; i++) {
+      if (random() < 0.5) {
+        new Carnivore(random(0, width), random(0, height));
+      } else {
+        new Herbivore(random(0, width), random(0, height));
+      }
+    }
   });
+
+  PAUSEBUTTON = new Button(10, 10, 100, 50, "Pause", 24, color(255, 0, 0), pause, LEFT);
+  RESUMEBUTTON = new Button(10, 10, 100, 50, "Resume", 24, color(0, 255, 0), resume, LEFT);
+
+  ADD100BUTTON = new Button(120, 10, 100, 50, "Add 100", 24, color(255, 100, 100), function() {
+    for (let i = 0; i < 100; i++) {
+      if (random() < 0.5) {
+        new Carnivore(random(0, width), random(0, height));
+      } else {
+        new Herbivore(random(0, width), random(0, height));
+      }
+    }
+  }, undefined, false, true);
+
+  for (let button of buttons) {
+    button.hide();
+  }
 
   new Button(0, 0, width, height, "Start", 48, color(100, 0, 255), function(){
     STARTMENU.show();
-  }, null, true, false);
-
-  PAUSEBUTTON = new Button(10, 10, 100, 50, "Pause", 32, color(255, 0, 0), pause, LEFT);
-  RESUMEBUTTON = new Button(10, 10, 100, 50, "Resume", 32, color(0, 255, 0), resume, LEFT);
-
-  RESUMEBUTTON.hide();
-  PAUSEBUTTON.hide();
+  }, undefined, true, false);
 }
 
 function draw() {
@@ -100,19 +120,12 @@ function draw() {
 
 function mouseClicked() {
 
-  let buttonWorked = false;
-
   for (let button of buttons) {
-    buttonWorked = button.click(mouseButton);
+    button.click(mouseButton);
   }
 
   for (let menu of menus) {
-    buttonWorked = menu.click(mouseX, mouseY, mouseButton);
-  }
-
-  if (buttonWorked) {
-    // add a new creature at the mouse locations
-    creatures.push(new Creature(mouseX, mouseY));
+    menu.click(mouseX, mouseY);
   }
 }
 
@@ -123,7 +136,7 @@ function keyPressed() {
 
   } else {
     for (let i = 0; i < 100; i++) {
-      if (random < 0.5) {
+      if (random() < 0.5) {
         new Carnivore(random(0, width), random(0, height));
       } else {
         new Herbivore(random(0, width), random(0, height));

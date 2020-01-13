@@ -63,15 +63,9 @@ class Menu {
         }
     }
 
-    click(x, y, mouseButton) {
+    click(x, y) {
         if (!this.hidden) {
-            if (x >= this.x && x <= this.width && y >= this.y && y <= this.height) {
-
-                for (let button of this.buttons) {
-                    print(button);
-                    button.click(mouseButton);
-                }
-
+            if (x >= this.x && x <= this.x + this.width && y >= this.y && y <= this.y + this.height) {
                 return true;
             }
         }
