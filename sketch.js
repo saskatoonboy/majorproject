@@ -26,7 +26,7 @@ function setup() {
   STARTMENU = new Menu(0, 0, width, height, color(100, 0, 255), color(100, 200, 0));
 
   STARTMENU.addText(0, 0, width, height/2, "This is a my evolution emulator the goal of this project is to emulate how evolution works. If you don't know already evolution is when a creature mutates in a good or bad way. If it is good then the creature will probably live, if not then it will probably die. My creatures will emulate physical and behavioral trates. Have fun.", 24);
-  STARTMENU.addButton(100, height/2, 100, 200, "Tutorial", 22, function() {
+  STARTMENU.addButton(100, height/2, 100, 200, "Start", 22, function() {
     STARTMENU.hide();
     RESUMEBUTTON.show();
     ADD100BUTTON.show();

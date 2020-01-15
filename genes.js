@@ -1,3 +1,4 @@
+// this is a global object with a function return a completely random gene
 let gene = {
     randomGenes : function(isHerbivore) {
         return geneTemplate = {
@@ -25,7 +26,7 @@ let gene = {
 
 class BrainGenenome {
 
-    // constructor
+    // constructor stores given genes in the object
     constructor(connectionGenes, nodeGenes) {
 
         this.connectinonGenes = connectionGenes;
@@ -33,10 +34,14 @@ class BrainGenenome {
 
     }
 
-    // get a list of nodes from the connection genenome
+    // get a list of nodes from the connection gene
     unpackNodes() {
+        // array for the nodes
         let localNodes = [];
+
+        // loop through the node genes
         for (let nodeGene of this.nodeGenes) {
+            // push the node 
             localNodes.push(nodeGene.getNode());
         }
         return localNodes;
