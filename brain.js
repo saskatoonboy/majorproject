@@ -273,7 +273,7 @@ class Connection {
     }
 
     getGene() {
-        return new ConnectionGene(this.identificationNumber, this.from, this.to, this.enabled, this.weight);
+        return new ConnectionGene(this.identificationNumber);
     }
 
     calculate() {
