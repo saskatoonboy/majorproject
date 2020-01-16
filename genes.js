@@ -1,3 +1,4 @@
+// this is a global object with a function return a completely random gene
 let gene = {
     randomGenes : function(isHerbivore) {
         return geneTemplate = {
@@ -25,7 +26,7 @@ let gene = {
 
 class BrainGenenome {
 
-    // constructor
+    // constructor stores given genes in the object
     constructor(connectionGenes, nodeGenes) {
 
         this.connectinonGenes = connectionGenes;
@@ -33,45 +34,56 @@ class BrainGenenome {
 
     }
 
-    // get a list of nodes from the connection genenome
+    // get a list of nodes from the connection gene
     unpackNodes() {
+        // array for the nodes
         let localNodes = [];
+
+        // loop through the node genes
         for (let nodeGene of this.nodeGenes) {
+            // push the node generated from the node gene to the local variable
             localNodes.push(nodeGene.getNode());
         }
+        
+        // return the local array variable
         return localNodes;
 
     }
 
-    // get a list of connections from the connection genenome
+    // get a list of connections from the connection gene
     unpackConnections() {
+        // local array for the connections
         let localConnections = [];
+
+        // loop through the connection genes
         for (let connectionGene of this.connectinonGenes) {
+            // push the connection generated from the connection gene to the local array
             localConnections.push(connectionGene.getConnection());
         }
+
+        // retunr the local array variable
         return localConnections;
     }
 }
 
+// used to store information required to create a connection (I made this with more functionallity then removed it but didnt want to rewrite the parts of my code that used this class to transfer the brain from a parent to child)
 class ConnectionGene {
     
-    // constructior
-    constructor(identification, from, to, enabled, weight) {
+    // constructior stores all essential give data to class attributes
+    constructor(identification) {
         this.identificationNumber = identification;
-        this.from = from;
-        this.to = to;
-        this.enabled = enabled;
-        this.weight = weight;
     }
 
+    // get the connection out of the global connections array
     getConnection() {
         return connections[this.identificationNumber];
     }
 }
 
+// used to store information required to create a node
 class NodeGene {
     
-    // constructior
+    // constructior stores all essential data to create the same node
     constructor(identification, kind, func) {
         this.identificationNumber = identification;
         this.kind = kind;
