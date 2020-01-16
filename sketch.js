@@ -5,7 +5,7 @@
 // Extra for Experts:
 // - 
 
-const startingFoodCount = 100;
+let startingFoodCount = 100;
 let buttons = [];
 let menus = [];
 let simulating = false;
@@ -102,6 +102,8 @@ function setup() {
     SETTINGSMENU.hide();
     ADD100BUTTON.show();
     RESUMEBUTTON.show();
+    startingFoodCount = settings.foodCnt;
+    sizeMultiplier = settings.creatureSize;
   });
 
   PAUSEBUTTON = new Button(10, 10, 100, 50, "Pause", 24, color(255, 0, 0), pause, LEFT);
@@ -110,9 +112,9 @@ function setup() {
   ADD100BUTTON = new Button(230, 10, 100, 50, "Add 100", 24, color(255, 100, 100), function() {
     for (let i = 0; i < 100; i++) {
       if (random() < 0.5) {
-        new Carnivore(random(0, width), random(0, height));
+        makeCarnivore(random(0, width), random(0, height));
       } else {
-        new Herbivore(random(0, width), random(0, height));
+        makeHerbivore(random(0, width), random(0, height));
       }
     }
   }, undefined, false, true);
@@ -184,26 +186,6 @@ function draw() {
 function mousePressed() {
   for (let button of buttons) {
     button.click(mouseButton);
-  }
-}
-
-function keyPressed() {
-  if (key == " ") {
-
-    if (simulating) {
-      pause();
-    } else {
-      resume();
-    }
-
-  } else {
-    for (let i = 0; i < 100; i++) {
-      if (random() < 0.5) {
-        new Carnivore(random(0, width), random(0, height));
-      } else {
-        new Herbivore(random(0, width), random(0, height));
-      }
-    }
   }
 }
 

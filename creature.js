@@ -1,7 +1,7 @@
 let instructionFunctions = [forward, back, left, right, wantToGiveBirth, wantToEat, wantToMate, resetTimer, com1, com2, com3];
 let creatures = [];
 
-const sizeMultiplier = 50;
+let sizeMultiplier = 50;
 
 // creature that is evolving over time
 class Creature extends Edible {
@@ -349,6 +349,27 @@ class Herbivore extends Creature {
 
 }
 
+function makeCarnivore(x, y, genes) {
+    if (settings.kindOfCreatures !== 1) {
+        new Carnivore(x, y, genes);
+    } else {
+        if (genes !== undefined) {
+            genes.isHerbivore = true;
+        }
+        new Herbivore(x, y, genes);
+    }
+}
+
+function makeHerbivore(x, y, genes) {
+    if (settings.kindOfCreatures !== 2) {
+        new Herbivore(x, y, genes);
+    } else {
+        if (genes !== undefined) {
+            genes.isHerbivore = false;
+        }
+        new Carnivore(x, y, genes);
+    }
+}
 
 // move the creature forward if the brain sent a 0.5 or greater
 function forward(inst, creature) {
