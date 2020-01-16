@@ -12,6 +12,7 @@ class Button {
         this.textSize = size;
         this.autoHide = hideOnClick;
         this.hoverEffect = hoverEffect;
+        this.revealedThisFrame = true;
         buttons.push(this);
     }
 
@@ -31,6 +32,7 @@ class Button {
         textSize(this.textSize);
         textAlign(CENTER, CENTER);
         text(this.text, this.x, this.y, this.w, this.h);
+        this.revealedThisFrame = false;
     }
 
     hover(x, y) {
@@ -38,10 +40,9 @@ class Button {
     }
 
     click(button) {
-        if (!this.hidden) {
+        if (!this.hidden || this.revealedThisFrame) {
             if (this.button !== undefined) {
                 if (button !== this.button) {
-                    print(this.button);
                     return false;
                 }
             }
@@ -52,7 +53,6 @@ class Button {
                     this.hide();
                 }
             }
-    
             return true;
         }
         return false;
@@ -64,5 +64,6 @@ class Button {
 
     show() {
         this.hidden = false;
+        this.revealedThisFrame = true;
     }
 }
