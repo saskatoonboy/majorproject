@@ -75,7 +75,7 @@ class Creature extends Edible {
         push();
         // translate to allow rotation
         translate(this.pos.x, this.pos.y);
-        // rotate based of the direction the creature is facing 1.5 is a constant to offset the heading value properly
+        // rotate based of the direction the creature is facing half of pi is a constant to offset the heading value properly
         rotate(angle);
         // draw the creature
         super.display();
@@ -122,18 +122,18 @@ class Creature extends Edible {
         }
 
         // if the creature has moved of the side of the screen on the x axis the loop it to the other side
-        // if (this.pos.x < 0) {
-        //     this.pos.x += width;
-        // } else if (this.pos.x > width) {
-        //     this.pos.x -= width;
-        // }
+        if (this.pos.x < 0) {
+            this.pos.x += width;
+        } else if (this.pos.x > width) {
+            this.pos.x -= width;
+        }
 
-        // // if the creature has moved of the side of the screen on the y axis the loop it to the other side
-        // if (this.pos.y < 0) {
-        //     this.pos.y += height;
-        // } else if (this.pos.y > height) {
-        //     this.pos.y -= height;
-        // }
+        // if the creature has moved of the side of the screen on the y axis the loop it to the other side
+        if (this.pos.y < 0) {
+            this.pos.y += height;
+        } else if (this.pos.y > height) {
+            this.pos.y -= height;
+        }
 
         // updating time
         let time = millis() - this.lastMilis;
@@ -319,6 +319,7 @@ class Creature extends Edible {
 class Carnivore extends Creature {
 
     constructor(x, y, genes) {
+        print("c");
         super(x, y, genes, false);
     }
 
@@ -336,6 +337,7 @@ class Carnivore extends Creature {
 class Herbivore extends Creature {
 
     constructor(x, y, genes) {
+        print("h");
         super(x, y, genes, true);
     }
 

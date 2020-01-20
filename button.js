@@ -40,22 +40,23 @@ class Button {
     }
 
     click(button) {
-        if (!this.hidden || this.revealedThisFrame) {
-            if (this.button !== undefined) {
-                if (button !== this.button) {
-                    return false;
-                }
-            }
-    
-            if (this.isHover) {
-                this.f();
-                if (this.autoHide) {
-                    this.hide();
-                }
-            }
-            return true;
+
+        if (this.hidden || this.revealedThisFrame) {
+            return false;
         }
-        return false;
+        if (this.button !== undefined) {
+            if (button !== this.button) {
+                return false;
+            }
+        }
+
+        if (this.isHover) {
+            this.f();
+            if (this.autoHide) {
+                this.hide();
+            }
+        }
+        return true;
     }
 
     hide() {
