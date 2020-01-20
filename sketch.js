@@ -170,9 +170,7 @@ function draw() {
     egg.display();
   }
 
-  foodCount = 100 - creatures.length;
-
-  if (foodCount > foods.length) {
+  if (startingFoodCount > foods.length) {
     foods.push(new Pellet(random(0, width), random(0, height)));
   }
 

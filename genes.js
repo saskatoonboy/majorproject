@@ -12,7 +12,7 @@ let gene = {
             timeToHatch : random(500, 5000),
             strength : floor(random(0, 1.01)*100)/100,
             angleOfVision : floor(random(-90, 90.01)*100)/100,
-            distanceOfVision : random(10, 101),
+            distanceOfVision : random(10, 1001),
             timerSpeed : floor(random(0, 1.01)*100)/100,
             communicationSensitivity : floor(random(0, 1.01)*100)/100,
             constant : random(),

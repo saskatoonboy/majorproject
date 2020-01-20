@@ -13,15 +13,13 @@ class Creature extends Edible {
         if (genes === undefined) {
             genes = gene.randomGenes(isHerbivore);
         }
-
-        //circle(0, 0, this.sizeRatio * 50);
-        //triangle(, 0, this.sizeRatio * 25, 0, 0, );
+        
         super(x, y, [["c", 0, 0, color(genes.red, genes.green, genes.blue), genes.size * sizeMultiplier], ["t", 0, 0, color(genes.red, genes.green, genes.blue), { x1: -genes.size * sizeMultiplier / 2, y1: 0, x2: genes.size * sizeMultiplier / 2, y2: 0, x3: 0, y3: -sqrt(((genes.size * sizeMultiplier) ** 2) - ((genes.size * sizeMultiplier / 2) ** 2)) }]], creatures);
 
         // base stats of creature
         this.energy = 0;
         this.stomach = 0; // WIP
-        this.stomachSize = 2000; // WIP
+        this.stomachSize = 500; // WIP
         this.health = 1000;
         this.facing = createVector(floor(random(0, width)), floor(random(0, height))).sub(this.pos).normalize();
         this.timer = 0;
@@ -34,8 +32,15 @@ class Creature extends Edible {
         this.reciving = [0, 0, 0];
         this.timeAlive = 0; // millis
         this.lastMilis = millis();
-        this.energyRatio = 2; // WIP
-        this.genes = genes;
+        this.meatbolism = 3; // WIP
+        this.energyRatio = 1; // WIP
+
+        // if there were not any genes given generate them randomly
+        if (genes === undefined) {
+            this.genes = gene.randomGenes();
+        } else {
+            this.genes = genes;
+        }
 
         // get physical traites from genes
         this.speedRatio = this.genes.speed;
@@ -78,7 +83,9 @@ class Creature extends Edible {
         // rotate based of the direction the creature is facing half of pi is a constant to offset the heading value properly
         rotate(angle);
         // draw the creature
-        super.display();
+        fill(this.red, this.green, this.blue);
+        circle(0, 0, this.sizeRatio * 50);
+        triangle(-this.sizeRatio * 25, 0, this.sizeRatio * 25, 0, 0, -sqrt(((this.sizeRatio * 50) ** 2) - ((this.sizeRatio * 25) ** 2)));
         pop();
     }
 
@@ -319,7 +326,6 @@ class Creature extends Edible {
 class Carnivore extends Creature {
 
     constructor(x, y, genes) {
-        print("c");
         super(x, y, genes, false);
     }
 
@@ -337,7 +343,6 @@ class Carnivore extends Creature {
 class Herbivore extends Creature {
 
     constructor(x, y, genes) {
-        print("h");
         super(x, y, genes, true);
     }
 
@@ -389,25 +394,11 @@ function back(inst, creature) {
 }
 
 function left(inst, creature) {
-
-    if (inst > HALF_PI/4) {
-        inst = HALF_PI/4;
-    } else if (inst < -HALF_PI/4) {
-        inst = -HALF_PI/4;
-    }
-
     creature.facing.rotate(-inst);
     creature.energy -= creature.energyRatio * inst;
 }
 
 function right(inst, creature) {
-
-    if (inst > HALF_PI/4) {
-        inst = HALF_PI/4;
-    } else if (inst < -HALF_PI/4) {
-        inst = -HALF_PI/4;
-    }
-
     creature.facing.rotate(inst);
     creature.energy -= creature.energyRatio * inst;
 }

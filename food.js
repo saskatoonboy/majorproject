@@ -18,7 +18,7 @@ class Edible extends Entity{
 
 class Pellet extends Edible{
     constructor(x, y, energy) {
-        let maxEnergy = 750;
+        let maxEnergy = 500;
         if (energy === undefined) {
             energy = maxEnergy;
         }
