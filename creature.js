@@ -1,15 +1,28 @@
 let instructionFunctions = [forward, back, left, right, wantToGiveBirth, wantToEat, wantToMate, resetTimer, com1, com2, com3];
+let creatures = [];
+
+let sizeMultiplier = 50;
 
 // creature that is evolving over time
-class Creature {
+class Creature extends Edible {
     // construct the creature class
-    constructor(x, y, genes) {
+    constructor(x, y, genes, isHerbivore) {
+
+
+        // if there were not any genes given generate them randomly
+        if (genes === undefined) {
+            genes = gene.randomGenes(isHerbivore);
+        }
+
+        //circle(0, 0, this.sizeRatio * 50);
+        //triangle(, 0, this.sizeRatio * 25, 0, 0, );
+        super(x, y, [["c", 0, 0, color(genes.red, genes.green, genes.blue), genes.size * sizeMultiplier], ["t", 0, 0, color(genes.red, genes.green, genes.blue), { x1: -genes.size * sizeMultiplier / 2, y1: 0, x2: genes.size * sizeMultiplier / 2, y2: 0, x3: 0, y3: -sqrt(((genes.size * sizeMultiplier) ** 2) - ((genes.size * sizeMultiplier / 2) ** 2)) }]], creatures);
+
         // base stats of creature
         this.energy = 0;
         this.stomach = 0; // WIP
         this.stomachSize = 2000; // WIP
         this.health = 1000;
-        this.pos = createVector(x, y);
         this.facing = createVector(floor(random(0, width)), floor(random(0, height))).sub(this.pos).normalize();
         this.timer = 0;
         this.maturity;
@@ -21,15 +34,8 @@ class Creature {
         this.reciving = [0, 0, 0];
         this.timeAlive = 0; // millis
         this.lastMilis = millis();
-        this.meatbolism = 5; // WIP
-        this.energyRatio = 1; // WIP
-
-        // if there were not any genes given generate them randomly
-        if (genes === undefined) {
-            this.genes = gene.randomGenes();
-        } else {
-            this.genes = genes;
-        }
+        this.energyRatio = 2; // WIP
+        this.genes = genes;
 
         // get physical traites from genes
         this.speedRatio = this.genes.speed;
@@ -45,6 +51,8 @@ class Creature {
         this.timerSpeed = this.genes.timerSpeed;
         this.communicationSensitivity = this.genes.communicationSensitivity;
         this.constantValue = this.genes.constant;
+        this.metabolism = this.genes.metabolism;
+
         this.toggleAble = 0;
         this.foodVisible = 0;
         this.creaturesVisible = 0;
@@ -54,6 +62,7 @@ class Creature {
         this.nearestCreatureDistance = 0;
 
         this.stomachSize = this.sizeRatio * 1000;
+        this.trueSize = this.sizeRatio * sizeMultiplier;
 
         // create bratin
         this.brain = new Brain(this.genes.brainGenes);
@@ -61,7 +70,6 @@ class Creature {
 
     // display the creature on screen
     display() {
-        // remove the stroke
         noStroke();
         let angle = this.facing.heading() + HALF_PI;
         push();
@@ -69,11 +77,8 @@ class Creature {
         translate(this.pos.x, this.pos.y);
         // rotate based of the direction the creature is facing 1.5 is a constant to offset the heading value properly
         rotate(angle);
-        // color the creature based of its genes
-        fill(this.red, this.green, this.blue);
         // draw the creature
-        circle(0, 0, this.sizeRatio * 25);
-        triangle(-this.sizeRatio * 12.5, 0, this.sizeRatio * 12.5, 0, 0, -sqrt(((this.sizeRatio * 25) ** 2) - ((this.sizeRatio * 12.5) ** 2)));
+        super.display();
         pop();
     }
 
@@ -81,7 +86,6 @@ class Creature {
     update() {
 
         let nearestFood = this.findNearestFood();
-        let foodDistance = this.distance(nearestFood);
 
 
         let nearestCreature = this.findNearestCreature();
@@ -96,11 +100,15 @@ class Creature {
                 this.nearestCreatureAngle = this.getAngle(nearestCreature);
             }
         }
+        if (nearestFood !== undefined) {
 
-        if (foodDistance <= this.distanceOfVision) {
-            this.nearestFood = nearestFood;
-            this.nearestFoodDistance = foodDistance;
-            this.nearestFoodAngle = this.getAngle(nearestFood);
+            let foodDistance = this.distance(nearestFood);
+
+            if (foodDistance <= this.distanceOfVision) {
+                this.nearestFood = nearestFood;
+                this.nearestFoodDistance = foodDistance;
+                this.nearestFoodAngle = this.getAngle(nearestFood);
+            }
         }
 
 
@@ -142,7 +150,7 @@ class Creature {
         }
 
         if (this.health <= 0) {
-            this.kill();
+            this.remove();
         }
 
         this.digest();
@@ -158,19 +166,10 @@ class Creature {
             }
         }
 
-        this.eat();
 
-        // if (this.wantToEat >= 0.5) {
-
-        // }
-
-        // if (this.timeAlive > 25000) {
-        //     print(this.timeAlive, this);
-        // }
-    }
-
-    kill() {
-        creatures.splice(creatures.indexOf(this), 1);
+        if (this.wantToEat >= 0.2 || this.energy < 0) {
+            this.eat();
+        }
     }
 
     getAngle(obj) {
@@ -179,14 +178,23 @@ class Creature {
 
     digest() {
         if (this.stomach > 0) {
-            if (this.stomach > this.meatbolism) {
-                this.stomach -= this.meatbolism;
-                this.energy += this.meatbolism;
+            if (this.stomach > this.metabolism) {
+                this.stomach -= this.metabolism;
+                this.energy += this.metabolism;
             } else {
                 this.energy += this.stomach;
                 this.stomach = 0;
             }
         }
+    }
+
+    useEnergy(amount) {
+        if (this.energy < amount) {
+            return false;
+        }
+
+        this.energy -= amount;
+        return true;
     }
 
     mutate() {
@@ -256,25 +264,24 @@ class Creature {
     birth() {
 
         this.genes.brainGenes = this.brain.getGenenome();
-        let egg = new Egg(this.pos.x, this.pos.y, this.genes);
-        eggs.push(egg);
+        new Egg(this.pos.x, this.pos.y, this.genes);
         this.energy -= 500;
     }
 
     eat() {
-        for (food of foods) {
-            if (food.collison(this)) {
-                this.stomach += food.consume(this.stomachSize - this.stomach);
+        if (this.nearestFood) {
+            if (this.nearestCreature) {
+                if (this.nearestFoodDistance > this.nearestCreatureDistance) {
+                    if (this.collison(this.nearestCreature) && this.sizeRatio >= this.nearestCreature.sizeRatio) {
+                        this.stomach += this.nearestCreature.consume(this.stomachSize - this.stomach);
+                    }
+                } else {
+                    if (this.nearestFood.collison(this)) {
+                        this.stomach += this.nearestFood.consume(this.stomachSize - this.stomach);
+                    }
+                }
             }
         }
-    }
-
-    distance(obj) {
-        return this.distanceVector(obj).mag();
-    }
-
-    distanceVector(obj) {
-        return this.pos.copy().sub(obj.pos);
     }
 
     findNearestFood() {
@@ -305,6 +312,62 @@ class Creature {
         }
 
         return nearCreature
+    }
+}
+
+
+class Carnivore extends Creature {
+
+    constructor(x, y, genes) {
+        super(x, y, genes, false);
+    }
+
+    eat() {
+        if (this.nearestCreature) {
+            if (this.collison(this.nearestCreature) && this.sizeRatio >= this.nearestCreature.sizeRatio) {
+                this.stomach += this.nearestCreature.consume(this.stomachSize - this.stomach);
+            }
+        }
+    }
+
+}
+
+
+class Herbivore extends Creature {
+
+    constructor(x, y, genes) {
+        super(x, y, genes, true);
+    }
+
+    eat() {
+        if (this.nearestFood) {
+            if (this.collison(this.nearestFood)) {
+                this.stomach += this.nearestFood.consume(this.stomachSize - this.stomach);
+            }
+        }
+    }
+
+}
+
+function makeCarnivore(x, y, genes) {
+    if (settings.kindOfCreatures !== 1) {
+        new Carnivore(x, y, genes);
+    } else {
+        if (genes !== undefined) {
+            genes.isHerbivore = true;
+        }
+        new Herbivore(x, y, genes);
+    }
+}
+
+function makeHerbivore(x, y, genes) {
+    if (settings.kindOfCreatures !== 2) {
+        new Herbivore(x, y, genes);
+    } else {
+        if (genes !== undefined) {
+            genes.isHerbivore = false;
+        }
+        new Carnivore(x, y, genes);
     }
 }
 

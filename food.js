@@ -1,35 +1,8 @@
-class Pellet {
-    constructor(x, y, energy) {
-        this.maxEnergy = 1000;
-        if (energy === undefined) {
-            this.energy = this.maxEnergy;
-        } else {
-            this.energy = energy;
-            this.maxEnergy = energy;
-        }
-        this.size = this.energy/this.maxEnergy;
-        this.pos = createVector(x, y);
-    }
+let foods = [];
 
-    display() {
-        push();
-        translate(this.pos.x, this.pos.y);
-        noStroke();
-        fill(41, 140, 72);
-        circle(0, 0, this.size*10);
-        pop();
-    }
-
-    update() {
-        this.size = this.energy/this.maxEnergy;
-    }
-
-    collison(creature) {
-        return creature.distance(this) <= creature.sizeRatio*12.5+this.size*5;
-    }
-
-    remove() {
-        foods.splice(foods.indexOf(this), 1);
+class Edible extends Entity{
+    constructor (x, y, shapes, entityArray) {
+        super(x, y, shapes, entityArray);
     }
 
     consume(stomachSpace) {
@@ -40,5 +13,35 @@ class Pellet {
             this.energy -= stomachSpace;
             return stomachSpace;
         }
+    }
+}
+
+class Pellet extends Edible{
+    constructor(x, y, energy) {
+        let maxEnergy = 750;
+        if (energy === undefined) {
+            energy = maxEnergy;
+        }
+        super(x, y, [["c", 0, 0, color(41, 140, 72), energy*10/maxEnergy]], foods);
+        
+        this.maxEnergy = maxEnergy;
+        this.energy = energy;
+        this.maxEnergy = energy;
+        this.size = this.energy/this.maxEnergy;
+    }
+
+    display() {
+        push();
+        translate(this.pos.x, this.pos.y);
+        super.display();
+        pop();
+    }
+
+    update() {
+        this.size = this.energy/this.maxEnergy;
+        let circles = this.getCircles();
+        circles[0].d = this.size * 10;
+        this.setCircles(circles)
+        this.trueSize = this.size * 10;
     }
 }
