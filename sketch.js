@@ -9,6 +9,7 @@ let creatures = [];
 let foods = [];
 let eggs = [];
 let startingFoodCount = 100;
+let foodCount = startingFoodCount;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -53,7 +54,9 @@ function draw() {
     egg.display();
   }
 
-  if (startingFoodCount > foods.length) {
+  foodCount = 100 - creatures.length;
+
+  if (foodCount > foods.length) {
     foods.push(new Pellet(random(0, width), random(0, height)));
   }
 }

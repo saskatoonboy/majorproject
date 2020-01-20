@@ -7,7 +7,7 @@ class Creature {
         // base stats of creature
         this.energy = 0;
         this.stomach = 0; // WIP
-        this.stomachSize = 500; // WIP
+        this.stomachSize = 2000; // WIP
         this.health = 1000;
         this.pos = createVector(x, y);
         this.facing = createVector(floor(random(0, width)), floor(random(0, height))).sub(this.pos).normalize();
@@ -21,7 +21,7 @@ class Creature {
         this.reciving = [0, 0, 0];
         this.timeAlive = 0; // millis
         this.lastMilis = millis();
-        this.meatbolism = 3; // WIP
+        this.meatbolism = 5; // WIP
         this.energyRatio = 1; // WIP
 
         // if there were not any genes given generate them randomly
@@ -72,8 +72,8 @@ class Creature {
         // color the creature based of its genes
         fill(this.red, this.green, this.blue);
         // draw the creature
-        circle(0, 0, this.sizeRatio * 50);
-        triangle(-this.sizeRatio * 25, 0, this.sizeRatio * 25, 0, 0, -sqrt(((this.sizeRatio * 50) ** 2) - ((this.sizeRatio * 25) ** 2)));
+        circle(0, 0, this.sizeRatio * 25);
+        triangle(-this.sizeRatio * 12.5, 0, this.sizeRatio * 12.5, 0, 0, -sqrt(((this.sizeRatio * 25) ** 2) - ((this.sizeRatio * 12.5) ** 2)));
         pop();
     }
 
@@ -114,18 +114,18 @@ class Creature {
         }
 
         // if the creature has moved of the side of the screen on the x axis the loop it to the other side
-        if (this.pos.x < 0) {
-            this.pos.x += width;
-        } else if (this.pos.x > width) {
-            this.pos.x -= width;
-        }
+        // if (this.pos.x < 0) {
+        //     this.pos.x += width;
+        // } else if (this.pos.x > width) {
+        //     this.pos.x -= width;
+        // }
 
-        // if the creature has moved of the side of the screen on the y axis the loop it to the other side
-        if (this.pos.y < 0) {
-            this.pos.y += height;
-        } else if (this.pos.y > height) {
-            this.pos.y -= height;
-        }
+        // // if the creature has moved of the side of the screen on the y axis the loop it to the other side
+        // if (this.pos.y < 0) {
+        //     this.pos.y += height;
+        // } else if (this.pos.y > height) {
+        //     this.pos.y -= height;
+        // }
 
         // updating time
         let time = millis() - this.lastMilis;
@@ -324,11 +324,25 @@ function back(inst, creature) {
 }
 
 function left(inst, creature) {
+
+    if (inst > HALF_PI/4) {
+        inst = HALF_PI/4;
+    } else if (inst < -HALF_PI/4) {
+        inst = -HALF_PI/4;
+    }
+
     creature.facing.rotate(-inst);
     creature.energy -= creature.energyRatio * inst;
 }
 
 function right(inst, creature) {
+
+    if (inst > HALF_PI/4) {
+        inst = HALF_PI/4;
+    } else if (inst < -HALF_PI/4) {
+        inst = -HALF_PI/4;
+    }
+
     creature.facing.rotate(inst);
     creature.energy -= creature.energyRatio * inst;
 }

@@ -1,6 +1,6 @@
 class Pellet {
     constructor(x, y, energy) {
-        this.maxEnergy = 500;
+        this.maxEnergy = 1000;
         if (energy === undefined) {
             this.energy = this.maxEnergy;
         } else {
@@ -18,14 +18,6 @@ class Pellet {
         fill(41, 140, 72);
         circle(0, 0, this.size*10);
         pop();
-
-        push();
-        translate(width/2, height/2);
-        stroke(0, 0, 0);
-        strokeWeight(3);
-        let pos = this.pos.copy().normalize();
-        line(0, 0, pos.x*100, pos.y*100);
-        pop();
     }
 
     update() {
@@ -33,7 +25,7 @@ class Pellet {
     }
 
     collison(creature) {
-        return creature.distance(this) <= creature.sizeRatio*25+this.size*5;
+        return creature.distance(this) <= creature.sizeRatio*12.5+this.size*5;
     }
 
     remove() {
